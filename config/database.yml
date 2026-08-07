@@ -88,20 +88,18 @@ production:
   primary: &primary_production
     <<: *default
     url: <%= ENV["DATABASE_URL"] %>
-  # Mesmo servidor Postgres da Railway (mesmo host/usuário/senha, herdados
-  # de DATABASE_URL acima), mas cada um com sua PRÓPRIA base — "database:"
-  # sobrepõe só o nome do banco da URL. Usar a mesma base física para os
-  # quatro confunde o db:prepare do Rails (schema_migrations/ar_internal_metadata
-  # compartilhados fazem ele pular a migração das bases secundárias).
+  # Mesmo servidor Postgres da Railway, mas cada um com sua própria base —
+  # via CACHE_DATABASE_URL/QUEUE_DATABASE_URL/CABLE_DATABASE_URL (convenção
+  # automática do Rails para bases secundárias, ver comentário acima). Usar a
+  # mesma base física para os quatro confunde o db:prepare do Rails
+  # (schema_migrations/ar_internal_metadata compartilhados fazem ele pular a
+  # migração das bases secundárias).
   cache:
-    <<: *primary_production
-    database: railway_cache
+    <<: *default
     migrations_paths: db/cache_migrate
   queue:
-    <<: *primary_production
-    database: railway_queue
+    <<: *default
     migrations_paths: db/queue_migrate
   cable:
-    <<: *primary_production
-    database: railway_cable
+    <<: *default
     migrations_paths: db/cable_migrate
