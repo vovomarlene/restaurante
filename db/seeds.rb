@@ -12,35 +12,40 @@ admin.save!
 
 puts "Admin: #{admin_email} / senha: #{admin_password}" if admin.previously_new_record?
 
-bebidas = Category.find_or_create_by!(name: "Bebidas") { |c| c.position = 1 }
-pratos = Category.find_or_create_by!(name: "Pratos") { |c| c.position = 2 }
+# Cardápio de exemplo — só em desenvolvimento. Em produção o restaurante
+# cadastra o próprio cardápio pelo admin; não faz sentido nascer com
+# "Feijoada"/"Refrigerante" de mentira no banco real.
+if Rails.env.development?
+  bebidas = Category.find_or_create_by!(name: "Bebidas") { |c| c.position = 1 }
+  pratos = Category.find_or_create_by!(name: "Pratos") { |c| c.position = 2 }
 
-refrigerante_lata = Ingredient.find_or_create_by!(name: "Refrigerante lata 350ml") do |i|
-  i.unit = :un
-  i.current_stock = 50
-  i.min_stock = 10
-end
+  refrigerante_lata = Ingredient.find_or_create_by!(name: "Refrigerante lata 350ml") do |i|
+    i.unit = :un
+    i.current_stock = 50
+    i.min_stock = 10
+  end
 
-feijao = Ingredient.find_or_create_by!(name: "Feijão") do |i|
-  i.unit = :kg
-  i.current_stock = 20
-  i.min_stock = 5
-end
+  feijao = Ingredient.find_or_create_by!(name: "Feijão") do |i|
+    i.unit = :kg
+    i.current_stock = 20
+    i.min_stock = 5
+  end
 
-refrigerante = Product.find_or_create_by!(name: "Refrigerante lata") do |p|
-  p.category = bebidas
-  p.price = 6.00
-  p.description = "Lata 350ml"
-end
-refrigerante.recipe_items.find_or_create_by!(ingredient: refrigerante_lata) { |ri| ri.quantity = 1 }
+  refrigerante = Product.find_or_create_by!(name: "Refrigerante lata") do |p|
+    p.category = bebidas
+    p.price = 6.00
+    p.description = "Lata 350ml"
+  end
+  refrigerante.recipe_items.find_or_create_by!(ingredient: refrigerante_lata) { |ri| ri.quantity = 1 }
 
-feijoada = Product.find_or_create_by!(name: "Feijoada") do |p|
-  p.category = pratos
-  p.price = 32.00
-  p.description = "Porção individual"
-end
-feijoada.recipe_items.find_or_create_by!(ingredient: feijao) { |ri| ri.quantity = 0.3 }
+  feijoada = Product.find_or_create_by!(name: "Feijoada") do |p|
+    p.category = pratos
+    p.price = 32.00
+    p.description = "Porção individual"
+  end
+  feijoada.recipe_items.find_or_create_by!(ingredient: feijao) { |ri| ri.quantity = 0.3 }
 
-(1..6).each do |number|
-  DiningTable.find_or_create_by!(number: number) { |t| t.capacity = number.even? ? 4 : 2 }
+  (1..6).each do |number|
+    DiningTable.find_or_create_by!(number: number) { |t| t.capacity = number.even? ? 4 : 2 }
+  end
 end

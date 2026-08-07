@@ -3,6 +3,9 @@
 # If running the rails server then create or migrate existing database
 if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
   ./bin/rails db:prepare
+  # seeds.rb usa find_or_create_by!/find_or_initialize_by, então rodar de
+  # novo a cada deploy é seguro (não duplica nem sobrescreve dados).
+  ./bin/rails db:seed
 fi
 
 # Thruster listens on HTTP_PORT (defaults to 80), but hosts like Railway
