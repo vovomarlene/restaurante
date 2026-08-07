@@ -1,0 +1,9 @@
+bebidas:
+  name: Bebidas
+  position: 1
+  active: true
+
+pratos:
+  name: Pratos
+  position: 2
+  active: true

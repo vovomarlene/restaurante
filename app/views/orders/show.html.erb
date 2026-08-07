@@ -1,0 +1,38 @@
+<% content_for :title, "Comanda ##{@order.id}" %>
+<% content_for :head do %>
+  <%= javascript_include_tag "qz-tray", "data-turbo-track": "reload" %>
+<% end %>
+
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="font-bold text-2xl">
+      <% if @order.mesa? %>
+        Mesa <%= @order.dining_table.number %>
+      <% elsif @order.balcao? %>
+        Venda balcão #<%= @order.id %>
+      <% else %>
+        Delivery #<%= @order.id %>
+      <% end %>
+    </h1>
+    <p class="text-sm text-ink-muted">
+      Aberta por <%= @order.opened_by.name %> às <%= l(@order.opened_at, format: :short) %>
+    </p>
+  </div>
+
+  <%= link_to "Voltar para mesas", tables_path, class: "text-primary-700 hover:underline text-sm" %>
+</div>
+
+<div class="grid md:grid-cols-2 gap-6">
+  <% if @order.aberto? %>
+    <%= render "product_picker", categories: @categories, order: @order %>
+  <% else %>
+    <div class="bg-surface rounded-xl shadow-sm border border-gray-200 p-4">
+      <p class="text-ink-muted">Esta comanda está <%= @order.fechado? ? "fechada" : "cancelada" %>.</p>
+      <% if @order.fechado? %>
+        <%= link_to "Ver recibo", receipt_order_path(@order), class: "inline-block mt-3 text-primary-700 hover:underline text-sm" %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <%= render "cart", order: @order %>
+</div>

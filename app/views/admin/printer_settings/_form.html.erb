@@ -1,0 +1,37 @@
+<%= form_with model: printer_setting, url: admin_printer_setting_path, method: :patch, class: "space-y-4" do |form| %>
+  <% if printer_setting.errors.any? %>
+    <div class="py-2 px-3 bg-red-50 text-red-700 rounded-lg text-sm">
+      <%= printer_setting.errors.full_messages.to_sentence %>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :restaurant_name, "Nome do restaurante (aparece no recibo)", class: "block text-sm font-medium text-ink-muted mb-1" %>
+    <%= form.text_field :restaurant_name, placeholder: t("app.name"),
+          class: "block shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-2 w-full" %>
+  </div>
+
+  <div>
+    <%= form.label :receipt_printer_name, "Impressora do recibo", class: "block text-sm font-medium text-ink-muted mb-1" %>
+    <%= form.text_field :receipt_printer_name, list: "printers-list", data: { printer_detect_target: "receiptInput" },
+          class: "block shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-2 w-full" %>
+  </div>
+
+  <div>
+    <%= form.label :kitchen_printer_name, "Impressora da cozinha", class: "block text-sm font-medium text-ink-muted mb-1" %>
+    <%= form.text_field :kitchen_printer_name, list: "printers-list", data: { printer_detect_target: "kitchenInput" },
+          class: "block shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-2 w-full" %>
+    <p class="text-xs text-ink-muted mt-1">Pode ser a mesma impressora do recibo.</p>
+  </div>
+
+  <datalist id="printers-list" data-printer-detect-target="list"></datalist>
+
+  <div class="flex gap-3 items-center">
+    <%= form.submit "Salvar", class: "rounded-md px-3.5 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium cursor-pointer" %>
+    <button type="button" data-action="printer-detect#detect" class="rounded-md px-3.5 py-2 border border-gray-300 hover:bg-surface-muted font-medium cursor-pointer">
+      Detectar impressoras
+    </button>
+  </div>
+  <p data-printer-detect-target="status" class="text-xs text-ink-muted"></p>
+  <div data-printer-detect-target="suggestions" class="space-y-1"></div>
+<% end %>

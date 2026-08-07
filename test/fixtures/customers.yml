@@ -1,0 +1,9 @@
+maria:
+  name: Maria Souza
+  phone: "11999990000"
+  active: true
+
+joao:
+  name: João Silva
+  phone: "11988880000"
+  active: true

@@ -1,0 +1,50 @@
+<% content_for :title, t("app.name") %>
+
+<div class="bg-surface rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+  <h1 class="font-bold text-2xl mb-1">Olá, <%= Current.user.name %></h1>
+  <p class="text-ink-muted">Atalhos rápidos para o dia a dia do restaurante.</p>
+</div>
+
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+  <%= link_to tables_path, class: "bg-surface rounded-xl shadow-sm border border-gray-200 p-5 hover:border-primary-400 hover:bg-primary-50" do %>
+    <p class="font-semibold">Mesas</p>
+    <p class="text-ink-muted text-sm">Abrir comandas e acompanhar o salão</p>
+  <% end %>
+
+  <%= button_to orders_path(order: { order_type: "balcao" }), method: :post, class: "text-left w-full bg-surface rounded-xl shadow-sm border border-gray-200 p-5 hover:border-primary-400 hover:bg-primary-50 cursor-pointer" do %>
+    <p class="font-semibold">Balcão</p>
+    <p class="text-ink-muted text-sm">Nova venda rápida</p>
+  <% end %>
+
+  <%= link_to deliveries_path, class: "bg-surface rounded-xl shadow-sm border border-gray-200 p-5 hover:border-primary-400 hover:bg-primary-50" do %>
+    <p class="font-semibold">Delivery</p>
+    <p class="text-ink-muted text-sm">Pedidos e status de entrega</p>
+  <% end %>
+
+  <%= link_to cash_session_path, class: "bg-surface rounded-xl shadow-sm border border-gray-200 p-5 hover:border-primary-400 hover:bg-primary-50" do %>
+    <p class="font-semibold">Caixa</p>
+    <p class="text-ink-muted text-sm">Abrir/fechar caixa, sangria e suprimento</p>
+  <% end %>
+
+  <%= link_to customers_path, class: "bg-surface rounded-xl shadow-sm border border-gray-200 p-5 hover:border-primary-400 hover:bg-primary-50" do %>
+    <p class="font-semibold">Clientes</p>
+    <p class="text-ink-muted text-sm">Cadastro e fiado em aberto</p>
+  <% end %>
+
+  <% if current_user_admin? %>
+    <%= link_to admin_products_path, class: "bg-surface rounded-xl shadow-sm border border-gray-200 p-5 hover:border-primary-400 hover:bg-primary-50" do %>
+      <p class="font-semibold">Cardápio</p>
+      <p class="text-ink-muted text-sm">Categorias, produtos e ficha técnica</p>
+    <% end %>
+
+    <%= link_to admin_ingredients_path, class: "bg-surface rounded-xl shadow-sm border border-gray-200 p-5 hover:border-primary-400 hover:bg-primary-50" do %>
+      <p class="font-semibold">Insumos</p>
+      <p class="text-ink-muted text-sm">Estoque e movimentações</p>
+    <% end %>
+
+    <%= link_to admin_reports_path, class: "bg-surface rounded-xl shadow-sm border border-gray-200 p-5 hover:border-primary-400 hover:bg-primary-50" do %>
+      <p class="font-semibold">Relatórios</p>
+      <p class="text-ink-muted text-sm">Vendas, produtos e histórico de caixa</p>
+    <% end %>
+  <% end %>
+</div>

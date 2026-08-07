@@ -1,0 +1,88 @@
+<% content_for :title, "Recibo — Comanda ##{@order.id}" %>
+<% content_for :head do %>
+  <%= javascript_include_tag "qz-tray", "data-turbo-track": "reload" %>
+<% end %>
+
+<div class="max-w-sm mx-auto bg-surface rounded-xl shadow-sm border border-gray-200 p-6 print:shadow-none print:border-0">
+  <div class="text-center mb-4">
+    <h1 class="font-bold text-lg"><%= t("app.name") %></h1>
+    <p class="text-ink-muted text-sm">
+      <% if @order.mesa? %>
+        Mesa <%= @order.dining_table.number %>
+      <% elsif @order.balcao? %>
+        Venda balcão #<%= @order.id %>
+      <% else %>
+        Delivery — <%= @order.customer_name %>
+      <% end %>
+    </p>
+    <p class="text-ink-muted text-xs"><%= l(@order.closed_at || @order.opened_at, format: :long) %></p>
+  </div>
+
+  <ul class="text-sm divide-y divide-gray-100 mb-3">
+    <% @order.order_items.active.includes(:product).order(:created_at).each do |item| %>
+      <li class="py-1.5 flex justify-between gap-2">
+        <span><%= item.quantity %>x <%= item.product.name %></span>
+        <span><%= number_to_currency(item.total_price, unit: "R$", separator: ",", delimiter: ".") %></span>
+      </li>
+    <% end %>
+  </ul>
+
+  <div class="border-t border-gray-200 pt-2 text-sm space-y-1">
+    <div class="flex justify-between">
+      <span class="text-ink-muted">Subtotal</span>
+      <span><%= number_to_currency(@order.subtotal, unit: "R$", separator: ",", delimiter: ".") %></span>
+    </div>
+
+    <% if @order.mesa? %>
+      <div class="flex justify-between">
+        <span class="text-ink-muted">Taxa de serviço (<%= @order.service_fee_percent.to_i %>%)</span>
+        <span><%= number_to_currency(@order.service_fee_amount, unit: "R$", separator: ",", delimiter: ".") %></span>
+      </div>
+    <% end %>
+
+    <% if @order.delivery? %>
+      <div class="flex justify-between">
+        <span class="text-ink-muted">Taxa de entrega</span>
+        <span><%= number_to_currency(@order.delivery_fee, unit: "R$", separator: ",", delimiter: ".") %></span>
+      </div>
+    <% end %>
+
+    <div class="flex justify-between font-bold text-base pt-1">
+      <span>Total</span>
+      <span><%= number_to_currency(@order.total, unit: "R$", separator: ",", delimiter: ".") %></span>
+    </div>
+  </div>
+
+  <% if @order.payments.any? %>
+    <div class="border-t border-gray-200 pt-2 mt-2 text-sm">
+      <p class="font-medium mb-1">Pagamento</p>
+      <% @order.payments.each do |payment| %>
+        <div class="flex justify-between">
+          <span>
+            <%= t("enums.payment.method.#{payment.method}") %>
+            <% if payment.dinheiro? && payment.amount_received.present? && payment.troco.positive? %>
+              (troco <%= number_to_currency(payment.troco, unit: "R$", separator: ",", delimiter: ".") %>)
+            <% end %>
+          </span>
+          <span><%= number_to_currency(payment.amount, unit: "R$", separator: ",", delimiter: ".") %></span>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <p class="text-center text-ink-muted text-xs mt-6">Obrigado pela preferência!</p>
+
+  <div class="no-print mt-6 space-y-2" data-controller="qz-receipt-print"
+       data-qz-receipt-print-url-value="<%= receipt_order_path(@order, format: :json) %>"
+       data-qz-receipt-print-printer-name-value="<%= PrinterSetting.instance.receipt_printer_name %>">
+    <button data-qz-receipt-print-target="button" data-action="qz-receipt-print#print"
+            class="w-full rounded-md px-3.5 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium cursor-pointer">
+      Imprimir na impressora térmica
+    </button>
+    <p data-qz-receipt-print-target="status" class="text-xs text-ink-muted text-center"></p>
+
+    <button data-controller="print" data-action="print#print" class="w-full rounded-md px-3.5 py-2 border border-gray-300 hover:bg-surface-muted font-medium cursor-pointer">
+      Imprimir pelo navegador
+    </button>
+  </div>
+</div>

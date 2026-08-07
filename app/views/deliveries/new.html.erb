@@ -1,0 +1,35 @@
+<% content_for :title, "Novo pedido delivery" %>
+
+<h1 class="font-bold text-2xl mb-6">Novo pedido delivery</h1>
+
+<div class="bg-surface rounded-xl shadow-sm border border-gray-200 p-6 max-w-lg">
+  <%= form_with model: @order, url: deliveries_path, class: "space-y-4" do |form| %>
+    <% if @order.errors.any? %>
+      <div class="py-2 px-3 bg-red-50 text-red-700 rounded-lg text-sm">
+        <%= @order.errors.full_messages.to_sentence %>
+      </div>
+    <% end %>
+
+    <div>
+      <%= form.label :customer_name, "Nome do cliente", class: "block text-sm font-medium text-ink-muted mb-1" %>
+      <%= form.text_field :customer_name, class: "block shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-2 w-full" %>
+    </div>
+
+    <div>
+      <%= form.label :customer_phone, "Telefone", class: "block text-sm font-medium text-ink-muted mb-1" %>
+      <%= form.text_field :customer_phone, class: "block shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-2 w-full" %>
+    </div>
+
+    <div>
+      <%= form.label :delivery_address, "Endereço de entrega", class: "block text-sm font-medium text-ink-muted mb-1" %>
+      <%= form.text_area :delivery_address, rows: 2, class: "block shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-2 w-full" %>
+    </div>
+
+    <div>
+      <%= form.label :delivery_fee, "Taxa de entrega (R$)", class: "block text-sm font-medium text-ink-muted mb-1" %>
+      <%= form.number_field :delivery_fee, step: "0.01", value: @order.delivery_fee || 0, class: "block shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-2 w-full" %>
+    </div>
+
+    <%= form.submit "Criar pedido", class: "rounded-md px-3.5 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium cursor-pointer" %>
+  <% end %>
+</div>

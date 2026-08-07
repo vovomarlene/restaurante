@@ -1,0 +1,14 @@
+feijao_entrada_manual:
+  ingredient: feijao
+  quantity: 10
+  origin: manual
+  balance_after: 30
+  reason: Compra inicial
+  created_by: two
+
+refrigerante_venda_mesa_aberta:
+  ingredient: refrigerante_lata
+  quantity: -2
+  origin: venda
+  order_item: mesa_aberta_refrigerante
+  balance_after: 48

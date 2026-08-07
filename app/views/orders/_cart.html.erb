@@ -1,0 +1,80 @@
+<div id="cart" class="bg-surface rounded-xl shadow-sm border border-gray-200 p-4">
+  <h2 class="font-semibold text-lg mb-3">Comanda</h2>
+
+  <% if order.errors.any? %>
+    <div class="py-2 px-3 bg-red-50 text-red-700 rounded-lg text-sm mb-3">
+      <%= order.errors.full_messages.to_sentence %>
+    </div>
+  <% end %>
+
+  <% if local_assigns[:item]&.errors&.any? %>
+    <div class="py-2 px-3 bg-red-50 text-red-700 rounded-lg text-sm mb-3">
+      <%= item.errors.full_messages.to_sentence %>
+    </div>
+  <% end %>
+
+  <% items = order.order_items.active.includes(:product).order(:created_at) %>
+
+  <% if items.empty? %>
+    <p class="text-ink-muted text-sm">Nenhum item lançado ainda.</p>
+  <% else %>
+    <ul class="divide-y divide-gray-100 mb-4">
+      <% items.each do |item| %>
+        <li class="py-2 flex items-center justify-between gap-2 text-sm">
+          <div>
+            <span class="font-medium"><%= item.quantity %>x <%= item.product.name %></span>
+            <span class="text-ink-muted"><%= number_to_currency(item.total_price, unit: "R$", separator: ",", delimiter: ".") %></span>
+          </div>
+          <% if order.aberto? %>
+            <%= button_to "Remover", order_order_item_path(order, item), method: :delete, class: "text-danger hover:underline bg-transparent border-0 p-0 cursor-pointer font-normal text-xs" %>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <div class="border-t border-gray-200 pt-3 space-y-1 text-sm">
+    <div class="flex justify-between">
+      <span class="text-ink-muted">Subtotal</span>
+      <span><%= number_to_currency(order.subtotal, unit: "R$", separator: ",", delimiter: ".") %></span>
+    </div>
+
+    <% if order.mesa? %>
+      <div class="flex justify-between">
+        <span class="text-ink-muted">Taxa de serviço (<%= order.service_fee_percent.to_i %>%)</span>
+        <span><%= number_to_currency(order.service_fee_amount, unit: "R$", separator: ",", delimiter: ".") %></span>
+      </div>
+    <% end %>
+
+    <% if order.delivery? %>
+      <div class="flex justify-between">
+        <span class="text-ink-muted">Taxa de entrega</span>
+        <span><%= number_to_currency(order.delivery_fee, unit: "R$", separator: ",", delimiter: ".") %></span>
+      </div>
+    <% end %>
+
+    <div class="flex justify-between font-bold text-base pt-1">
+      <span>Total</span>
+      <span><%= number_to_currency(order.total, unit: "R$", separator: ",", delimiter: ".") %></span>
+    </div>
+  </div>
+
+  <% if order.aberto? && items.any? %>
+    <%= link_to "Ir para pagamento", new_order_payment_path(order),
+          class: "mt-4 block text-center rounded-md px-3.5 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium" %>
+  <% end %>
+
+  <% if order.aberto? && order.order_items.active.pending_kitchen.exists? %>
+    <div class="mt-3" data-controller="kitchen-print"
+         data-kitchen-print-ticket-url-value="<%= kitchen_ticket_order_path(order, format: :json) %>"
+         data-kitchen-print-confirm-url-value="<%= kitchen_ticket_confirm_order_path(order) %>"
+         data-kitchen-print-printer-name-value="<%= PrinterSetting.instance.kitchen_printer_name %>">
+      <button type="button" data-kitchen-print-target="button" data-action="kitchen-print#send"
+              class="w-full rounded-md px-3.5 py-2 border border-primary-600 text-primary-700 hover:bg-primary-50 font-medium cursor-pointer">
+        Enviar para cozinha
+      </button>
+      <p data-kitchen-print-target="status" class="text-xs text-ink-muted mt-1 text-center"></p>
+      <%= link_to "Ver/imprimir manualmente", kitchen_ticket_order_path(order), class: "block text-center text-xs text-ink-muted underline mt-1" %>
+    </div>
+  <% end %>
+</div>

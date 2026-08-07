@@ -1,0 +1,59 @@
+<% content_for :title, "Resumo do fechamento" %>
+
+<h1 class="font-bold text-2xl mb-6">Resumo do fechamento de caixa</h1>
+
+<div class="bg-surface rounded-xl shadow-sm border border-gray-200 p-6 max-w-md">
+  <dl class="text-sm space-y-1">
+    <div class="flex justify-between">
+      <dt class="text-ink-muted">Aberto por</dt>
+      <dd><%= @cash_session.opened_by.name %> às <%= l(@cash_session.opened_at, format: :short) %></dd>
+    </div>
+    <div class="flex justify-between">
+      <dt class="text-ink-muted">Fechado por</dt>
+      <dd><%= @cash_session.closed_by.name %> às <%= l(@cash_session.closed_at, format: :short) %></dd>
+    </div>
+    <div class="flex justify-between">
+      <dt class="text-ink-muted">Fundo de troco</dt>
+      <dd><%= number_to_currency(@cash_session.opening_amount, unit: "R$", separator: ",", delimiter: ".") %></dd>
+    </div>
+    <div class="flex justify-between">
+      <dt class="text-ink-muted">Vendas em dinheiro</dt>
+      <dd><%= number_to_currency(@cash_session.cash_sales_total, unit: "R$", separator: ",", delimiter: ".") %></dd>
+    </div>
+    <div class="flex justify-between">
+      <dt class="text-ink-muted">Fiado recebido (dinheiro)</dt>
+      <dd><%= number_to_currency(@cash_session.fiado_settlements_cash_total, unit: "R$", separator: ",", delimiter: ".") %></dd>
+    </div>
+    <div class="flex justify-between">
+      <dt class="text-ink-muted">Suprimentos</dt>
+      <dd><%= number_to_currency(@cash_session.suprimentos_total, unit: "R$", separator: ",", delimiter: ".") %></dd>
+    </div>
+    <div class="flex justify-between">
+      <dt class="text-ink-muted">Sangrias</dt>
+      <dd>- <%= number_to_currency(@cash_session.sangrias_total, unit: "R$", separator: ",", delimiter: ".") %></dd>
+    </div>
+    <div class="flex justify-between font-bold pt-1 border-t border-gray-100 mt-2">
+      <dt>Esperado em caixa</dt>
+      <dd><%= number_to_currency(@cash_session.expected_amount, unit: "R$", separator: ",", delimiter: ".") %></dd>
+    </div>
+    <div class="flex justify-between font-bold">
+      <dt>Contado em caixa</dt>
+      <dd><%= number_to_currency(@cash_session.closing_amount, unit: "R$", separator: ",", delimiter: ".") %></dd>
+    </div>
+    <div class="flex justify-between font-bold text-base pt-1 border-t border-gray-100 mt-2 <%= @cash_session.difference_amount.negative? ? "text-danger" : "text-success" %>">
+      <dt><%= @cash_session.difference_amount.negative? ? "Falta" : "Sobra" %></dt>
+      <dd><%= number_to_currency(@cash_session.difference_amount.abs, unit: "R$", separator: ",", delimiter: ".") %></dd>
+    </div>
+  </dl>
+
+  <% if @cash_session.closing_notes.present? %>
+    <p class="text-sm text-ink-muted mt-4">Observações: <%= @cash_session.closing_notes %></p>
+  <% end %>
+
+  <div class="no-print flex gap-3 mt-6">
+    <%= link_to "Abrir novo caixa", new_cash_session_path, class: "rounded-md px-3.5 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium" %>
+    <button data-controller="print" data-action="print#print" class="rounded-md px-3.5 py-2 border border-gray-300 hover:bg-surface-muted font-medium cursor-pointer">
+      Imprimir
+    </button>
+  </div>
+</div>

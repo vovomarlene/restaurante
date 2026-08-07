@@ -1,0 +1,144 @@
+"pt-BR":
+  app:
+    name: "Restaurante PDV"
+
+  enums:
+    user:
+      role:
+        caixa: "Caixa"
+        admin: "Administrador"
+    payment:
+      method:
+        dinheiro: "Dinheiro"
+        cartao_debito: "Cartão de débito"
+        cartao_credito: "Cartão de crédito"
+        pix: "PIX"
+        fiado: "Fiado"
+    cash_movement:
+      movement_type:
+        sangria: "Sangria"
+        suprimento: "Suprimento"
+    stock_movement:
+      origin:
+        manual: "Entrada manual"
+        venda: "Venda"
+        ajuste: "Ajuste"
+        estorno: "Estorno"
+    order:
+      order_type:
+        mesa: "Mesa"
+        balcao: "Balcão"
+        delivery: "Delivery"
+      delivery_status:
+        pendente: "Pendente"
+        em_preparo: "Em preparo"
+        saiu_para_entrega: "Saiu para entrega"
+        entregue: "Entregue"
+        cancelado: "Cancelado"
+
+  activerecord:
+    models:
+      user: "Usuário"
+      category: "Categoria"
+      product: "Produto"
+      ingredient: "Insumo"
+      recipe_item: "Item da ficha técnica"
+      dining_table: "Mesa"
+      order: "Comanda"
+      order_item: "Item da comanda"
+      cash_session: "Sessão de caixa"
+      cash_movement: "Movimento de caixa"
+      payment: "Pagamento"
+      stock_movement: "Movimento de estoque"
+      printer_setting: "Configuração de impressoras"
+      customer: "Cliente"
+      fiado_settlement: "Pagamento de fiado"
+    attributes:
+      user:
+        name: "Nome"
+        email_address: "E-mail"
+        password: "Senha"
+        password_confirmation: "Confirmação de senha"
+        role: "Perfil"
+        active: "Ativo"
+      category:
+        name: "Nome"
+        position: "Posição"
+        active: "Ativa"
+      product:
+        name: "Nome"
+        description: "Descrição"
+        price: "Preço"
+        category: "Categoria"
+        active: "Ativo"
+      ingredient:
+        name: "Nome"
+        unit: "Unidade"
+        current_stock: "Estoque atual"
+        min_stock: "Estoque mínimo"
+        active: "Ativo"
+      recipe_item:
+        ingredient: "Insumo"
+        quantity: "Quantidade"
+      dining_table:
+        number: "Número"
+        capacity: "Capacidade"
+        active: "Ativa"
+      order:
+        order_type: "Tipo de venda"
+        dining_table: "Mesa"
+        customer_name: "Nome do cliente"
+        customer_phone: "Telefone do cliente"
+        delivery_address: "Endereço de entrega"
+        delivery_fee: "Taxa de entrega"
+        service_fee_percent: "Taxa de serviço (%)"
+      order_item:
+        product: "Produto"
+        quantity: "Quantidade"
+        unit_price: "Preço unitário"
+        notes: "Observação"
+      cash_session:
+        opening_amount: "Fundo de troco inicial"
+        opening_notes: "Observações de abertura"
+        closing_amount: "Valor contado no fechamento"
+        closing_notes: "Observações de fechamento"
+      cash_movement:
+        movement_type: "Tipo"
+        amount: "Valor"
+        reason: "Motivo"
+      payment:
+        method: "Forma de pagamento"
+        amount: "Valor"
+        amount_received: "Valor recebido"
+        customer: "Cliente"
+      customer:
+        name: "Nome"
+        phone: "Telefone"
+        address: "Endereço"
+        notes: "Observações"
+        active: "Ativo"
+      fiado_settlement:
+        method: "Forma de pagamento"
+        amount: "Valor"
+        notes: "Observações"
+      printer_setting:
+        restaurant_name: "Nome do restaurante"
+        receipt_printer_name: "Impressora do recibo"
+        kitchen_printer_name: "Impressora da cozinha"
+
+  session:
+    new:
+      title: "Entrar"
+      email_address: "E-mail"
+      password: "Senha"
+      submit: "Entrar"
+      forgot_password: "Esqueceu a senha?"
+
+  nav:
+    logout: "Sair"
+
+  flash:
+    session:
+      destroyed: "Sessão encerrada."
+    authorization:
+      admin_required: "Acesso restrito a administradores."

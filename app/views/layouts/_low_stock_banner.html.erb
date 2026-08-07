@@ -1,0 +1,9 @@
+<% low_stock = Ingredient.active.low_stock %>
+<% if low_stock.any? %>
+  <div class="no-print py-2 px-3 bg-amber-50 text-amber-800 rounded-lg text-sm mb-4">
+    Estoque baixo: <%= low_stock.map(&:name).to_sentence %>
+    <% if current_user_admin? %>
+      — <%= link_to "ver insumos", admin_ingredients_path, class: "underline" %>
+    <% end %>
+  </div>
+<% end %>

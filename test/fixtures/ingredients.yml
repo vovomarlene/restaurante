@@ -1,0 +1,13 @@
+refrigerante_lata:
+  name: Refrigerante lata 350ml
+  unit: un
+  current_stock: 50
+  min_stock: 10
+  active: true
+
+feijao:
+  name: Feijão
+  unit: kg
+  current_stock: 20
+  min_stock: 5
+  active: true

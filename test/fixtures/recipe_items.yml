@@ -1,0 +1,9 @@
+refrigerante_usa_lata:
+  product: refrigerante
+  ingredient: refrigerante_lata
+  quantity: 1
+
+feijoada_usa_feijao:
+  product: feijoada
+  ingredient: feijao
+  quantity: 0.3

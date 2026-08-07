@@ -1,0 +1,6 @@
+maria_pagamento_parcial:
+  customer: maria
+  cash_session: fechada
+  method: dinheiro
+  amount: 10.00
+  recorded_by: two

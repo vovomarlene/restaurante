@@ -1,0 +1,13 @@
+sangria_exemplo:
+  cash_session: aberta
+  movement_type: sangria
+  amount: 20.00
+  reason: Troco para outro caixa
+  created_by: two
+
+suprimento_exemplo:
+  cash_session: aberta
+  movement_type: suprimento
+  amount: 50.00
+  reason: Reforço de troco
+  created_by: two

@@ -1,0 +1,13 @@
+refrigerante:
+  name: Refrigerante
+  description: Lata 350ml
+  price: 6.00
+  category: bebidas
+  active: true
+
+feijoada:
+  name: Feijoada
+  description: Porção individual
+  price: 32.00
+  category: pratos
+  active: true

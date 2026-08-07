@@ -1,0 +1,36 @@
+<% content_for :title, "Produtos" %>
+
+<div class="flex items-center justify-between mb-6">
+  <h1 class="font-bold text-2xl">Produtos</h1>
+  <%= link_to "Novo produto", new_admin_product_path, class: "rounded-md px-3.5 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium" %>
+</div>
+
+<div class="bg-surface rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+  <table class="w-full text-left text-sm">
+    <thead class="bg-surface-muted text-ink-muted">
+      <tr>
+        <th class="px-4 py-2">Nome</th>
+        <th class="px-4 py-2">Categoria</th>
+        <th class="px-4 py-2">Preço</th>
+        <th class="px-4 py-2">Ficha técnica</th>
+        <th class="px-4 py-2">Ativo</th>
+        <th class="px-4 py-2"></th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-100">
+      <% @products.each do |product| %>
+        <tr>
+          <td class="px-4 py-2"><%= product.name %></td>
+          <td class="px-4 py-2"><%= product.category.name %></td>
+          <td class="px-4 py-2"><%= number_to_currency(product.price, unit: "R$", separator: ",", delimiter: ".") %></td>
+          <td class="px-4 py-2"><%= product.recipe_items.size %> insumo(s)</td>
+          <td class="px-4 py-2"><%= product.active? ? "Sim" : "Não" %></td>
+          <td class="px-4 py-2 text-right space-x-3">
+            <%= link_to "Editar", edit_admin_product_path(product), class: "text-primary-700 hover:underline" %>
+            <%= button_to "Remover", admin_product_path(product), method: :delete, class: "text-danger hover:underline bg-transparent border-0 p-0 cursor-pointer font-normal", form: { data: { turbo_confirm: "Remover este produto?" } } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

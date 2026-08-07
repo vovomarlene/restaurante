@@ -1,0 +1,16 @@
+aberta:
+  opened_by: two
+  opening_amount: 100.00
+  status: aberta
+  opened_at: 2026-08-06 08:00:00
+
+fechada:
+  opened_by: two
+  closed_by: two
+  opening_amount: 100.00
+  closing_amount: 250.00
+  status: fechada
+  opened_at: 2026-08-05 08:00:00
+  closed_at: 2026-08-05 20:00:00
+  expected_amount: 245.00
+  difference_amount: 5.00

@@ -1,0 +1,19 @@
+<div class="bg-surface rounded-lg border border-gray-200 p-3 text-sm space-y-2">
+  <div>
+    <p class="font-medium"><%= order.customer_name %></p>
+    <p class="text-ink-muted text-xs"><%= order.customer_phone %></p>
+    <p class="text-ink-muted text-xs truncate" title="<%= order.delivery_address %>"><%= order.delivery_address %></p>
+  </div>
+
+  <p class="font-semibold"><%= number_to_currency(order.total, unit: "R$", separator: ",", delimiter: ".") %></p>
+
+  <div class="flex items-center justify-between gap-2">
+    <%= link_to "Comanda", order_path(order), class: "text-primary-700 hover:underline text-xs" %>
+
+    <% if order.delivery_status != "entregue" %>
+      <%= button_to advance_delivery_path(order), method: :patch, class: "text-xs rounded-md px-2 py-1 bg-primary-600 hover:bg-primary-700 text-white font-medium cursor-pointer" do %>
+        <%= { "pendente" => "Iniciar preparo", "em_preparo" => "Saiu para entrega", "saiu_para_entrega" => "Marcar entregue" }[order.delivery_status] %>
+      <% end %>
+    <% end %>
+  </div>
+</div>

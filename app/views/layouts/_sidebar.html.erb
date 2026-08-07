@@ -1,0 +1,48 @@
+<aside class="w-56 shrink-0 bg-primary-700 text-white min-h-screen flex flex-col">
+  <div class="px-4 py-4 border-b border-primary-600">
+    <%= link_to t("app.name"), root_path, class: "font-bold text-lg tracking-tight block" %>
+  </div>
+
+  <nav class="flex-1 px-3 py-4 space-y-1 text-sm">
+    <%= link_to "Mesas", tables_path,
+          class: "block px-3 py-2 rounded-md hover:bg-primary-800 hover:text-white #{current_page?(tables_path) ? "bg-primary-800 text-white" : "text-primary-100"}" %>
+    <%= button_to "Balcão", orders_path(order: { order_type: "balcao" }), method: :post,
+          class: "block w-full text-left px-3 py-2 rounded-md hover:bg-primary-800 hover:text-white bg-transparent border-0 cursor-pointer font-normal text-primary-100" %>
+    <%= link_to "Delivery", deliveries_path,
+          class: "block px-3 py-2 rounded-md hover:bg-primary-800 hover:text-white #{current_page?(deliveries_path) ? "bg-primary-800 text-white" : "text-primary-100"}" %>
+    <%= link_to "Clientes", customers_path,
+          class: "block px-3 py-2 rounded-md hover:bg-primary-800 hover:text-white #{current_page?(customers_path) ? "bg-primary-800 text-white" : "text-primary-100"}" %>
+
+    <% if current_user_admin? %>
+      <p class="px-3 pt-4 pb-1 text-xs font-semibold uppercase tracking-wide text-primary-300">Administração</p>
+      <%= link_to "Categorias", admin_categories_path,
+            class: "block px-3 py-2 rounded-md hover:bg-primary-800 hover:text-white #{current_page?(admin_categories_path) ? "bg-primary-800 text-white" : "text-primary-100"}" %>
+      <%= link_to "Produtos", admin_products_path,
+            class: "block px-3 py-2 rounded-md hover:bg-primary-800 hover:text-white #{current_page?(admin_products_path) ? "bg-primary-800 text-white" : "text-primary-100"}" %>
+      <%= link_to "Insumos", admin_ingredients_path,
+            class: "block px-3 py-2 rounded-md hover:bg-primary-800 hover:text-white #{current_page?(admin_ingredients_path) ? "bg-primary-800 text-white" : "text-primary-100"}" %>
+      <%= link_to "Cadastro de mesas", admin_dining_tables_path,
+            class: "block px-3 py-2 rounded-md hover:bg-primary-800 hover:text-white #{current_page?(admin_dining_tables_path) ? "bg-primary-800 text-white" : "text-primary-100"}" %>
+      <%= link_to "Relatórios", admin_reports_path,
+            class: "block px-3 py-2 rounded-md hover:bg-primary-800 hover:text-white #{current_page?(admin_reports_path) ? "bg-primary-800 text-white" : "text-primary-100"}" %>
+      <%= link_to "Impressoras", edit_admin_printer_setting_path,
+            class: "block px-3 py-2 rounded-md hover:bg-primary-800 hover:text-white #{current_page?(edit_admin_printer_setting_path) ? "bg-primary-800 text-white" : "text-primary-100"}" %>
+    <% end %>
+  </nav>
+
+  <div class="px-3 py-4 border-t border-primary-600 space-y-3">
+    <% if CashSession.current %>
+      <%= link_to "Caixa aberto", cash_session_path, class: "block text-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 hover:bg-green-200" %>
+    <% else %>
+      <%= link_to "Caixa fechado", new_cash_session_path, class: "block text-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 hover:bg-red-200" %>
+    <% end %>
+
+    <div class="text-primary-100 text-xs">
+      <%= Current.user.name %>
+      <span class="text-primary-300">·</span>
+      <%= t("enums.user.role.#{Current.user.role}") %>
+    </div>
+
+    <%= button_to t("nav.logout"), session_path, method: :delete, class: "w-full bg-primary-800 hover:bg-primary-900 px-3 py-1.5 rounded-md cursor-pointer text-sm" %>
+  </div>
+</aside>

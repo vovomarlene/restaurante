@@ -1,0 +1,37 @@
+<% content_for :title, "Insumos" %>
+
+<div class="flex items-center justify-between mb-6">
+  <h1 class="font-bold text-2xl">Insumos</h1>
+  <%= link_to "Novo insumo", new_admin_ingredient_path, class: "rounded-md px-3.5 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium" %>
+</div>
+
+<div class="bg-surface rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+  <table class="w-full text-left text-sm">
+    <thead class="bg-surface-muted text-ink-muted">
+      <tr>
+        <th class="px-4 py-2">Nome</th>
+        <th class="px-4 py-2">Unidade</th>
+        <th class="px-4 py-2">Estoque atual</th>
+        <th class="px-4 py-2">Estoque mínimo</th>
+        <th class="px-4 py-2">Ativo</th>
+        <th class="px-4 py-2"></th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-100">
+      <% @ingredients.each do |ingredient| %>
+        <tr class="<%= "bg-red-50" if ingredient.current_stock <= ingredient.min_stock %>">
+          <td class="px-4 py-2"><%= ingredient.name %></td>
+          <td class="px-4 py-2"><%= ingredient.unit %></td>
+          <td class="px-4 py-2"><%= ingredient.current_stock %></td>
+          <td class="px-4 py-2"><%= ingredient.min_stock %></td>
+          <td class="px-4 py-2"><%= ingredient.active? ? "Sim" : "Não" %></td>
+          <td class="px-4 py-2 text-right space-x-3">
+            <%= link_to "Movimentações", admin_ingredient_stock_movements_path(ingredient), class: "text-primary-700 hover:underline" %>
+            <%= link_to "Editar", edit_admin_ingredient_path(ingredient), class: "text-primary-700 hover:underline" %>
+            <%= button_to "Remover", admin_ingredient_path(ingredient), method: :delete, class: "text-danger hover:underline bg-transparent border-0 p-0 cursor-pointer font-normal", form: { data: { turbo_confirm: "Remover este insumo?" } } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

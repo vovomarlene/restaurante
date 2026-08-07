@@ -1,0 +1,68 @@
+<% content_for :title, "Pagamento" %>
+
+<h1 class="font-bold text-2xl mb-2">Pagamento — Comanda #<%= @order.id %></h1>
+<p class="text-ink-muted text-sm mb-6">
+  Total: <%= number_to_currency(@order.total, unit: "R$", separator: ",", delimiter: ".") %> ·
+  Já pago: <%= number_to_currency(@order.amount_paid, unit: "R$", separator: ",", delimiter: ".") %> ·
+  <span class="font-semibold">Restante: <%= number_to_currency(@order.balance_due, unit: "R$", separator: ",", delimiter: ".") %></span>
+</p>
+
+<div class="grid md:grid-cols-2 gap-6 max-w-3xl">
+  <div class="bg-surface rounded-xl shadow-sm border border-gray-200 p-6">
+    <h2 class="font-semibold text-lg mb-3">Registrar pagamento</h2>
+
+    <% if @payment.errors.any? %>
+      <div class="py-2 px-3 bg-red-50 text-red-700 rounded-lg text-sm mb-3">
+        <%= @payment.errors.full_messages.to_sentence %>
+      </div>
+    <% end %>
+
+    <%= form_with model: @payment, url: order_payments_path(@order), class: "space-y-4", data: { controller: "payment-method" } do |form| %>
+      <div>
+        <%= form.label :method, "Forma de pagamento", class: "block text-sm font-medium text-ink-muted mb-1" %>
+        <%= form.select :method,
+              [["Dinheiro", "dinheiro"], ["Cartão de débito", "cartao_debito"], ["Cartão de crédito", "cartao_credito"], ["PIX", "pix"], ["Fiado", "fiado"]],
+              {}, class: "block shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-2 w-full",
+              data: { action: "payment-method#toggle" } %>
+      </div>
+
+      <div>
+        <%= form.label :amount, "Valor (R$)", class: "block text-sm font-medium text-ink-muted mb-1" %>
+        <%= form.number_field :amount, step: "0.01", class: "block shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-2 w-full" %>
+      </div>
+
+      <div>
+        <%= form.label :amount_received, "Valor recebido em dinheiro (para calcular troco)", class: "block text-sm font-medium text-ink-muted mb-1" %>
+        <%= form.number_field :amount_received, step: "0.01", class: "block shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-2 w-full" %>
+      </div>
+
+      <div data-payment-method-target="customerField" class="<%= "hidden" unless @payment.fiado? %>">
+        <%= form.label :customer_id, "Cliente (fiado)", class: "block text-sm font-medium text-ink-muted mb-1" %>
+        <%= form.collection_select :customer_id, Customer.active, :id, :name, { include_blank: "Selecione o cliente" },
+              class: "block shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-2 w-full" %>
+        <%= link_to "Cliente não cadastrado? Cadastre aqui", new_customer_path, target: "_blank", class: "text-xs text-primary-700 hover:underline" %>
+      </div>
+
+      <%= form.submit "Registrar pagamento", class: "rounded-md px-3.5 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium cursor-pointer" %>
+    <% end %>
+  </div>
+
+  <div class="bg-surface rounded-xl shadow-sm border border-gray-200 p-6">
+    <h2 class="font-semibold text-lg mb-3">Pagamentos já registrados</h2>
+
+    <% if @order.payments.empty? %>
+      <p class="text-ink-muted text-sm">Nenhum pagamento registrado ainda.</p>
+    <% else %>
+      <ul class="divide-y divide-gray-100 text-sm">
+        <% @order.payments.each do |payment| %>
+          <li class="py-2 flex justify-between">
+            <span><%= t("enums.payment.method.#{payment.method}") %></span>
+            <span><%= number_to_currency(payment.amount, unit: "R$", separator: ",", delimiter: ".") %></span>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+
+    <%= link_to "Voltar para a comanda", order_path(@order), class: "inline-block mt-4 text-primary-700 hover:underline text-sm" %>
+  </div>
+</div>

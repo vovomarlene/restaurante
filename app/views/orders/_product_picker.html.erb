@@ -1,0 +1,19 @@
+<div class="bg-surface rounded-xl shadow-sm border border-gray-200 p-4">
+  <h2 class="font-semibold text-lg mb-3">Cardápio</h2>
+
+  <% categories.each do |category| %>
+    <% active_products = category.products.select(&:active?) %>
+    <% next if active_products.empty? %>
+
+    <h3 class="text-sm font-medium text-ink-muted mt-4 mb-2 first:mt-0"><%= category.name %></h3>
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+      <% active_products.each do |product| %>
+        <%= button_to order_order_items_path(order), params: { order_item: { product_id: product.id, quantity: 1 } }, method: :post,
+              class: "text-left rounded-md border border-gray-200 hover:border-primary-400 hover:bg-primary-50 px-3 py-2 text-sm cursor-pointer" do %>
+          <span class="block font-medium"><%= product.name %></span>
+          <span class="block text-ink-muted"><%= number_to_currency(product.price, unit: "R$", separator: ",", delimiter: ".") %></span>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

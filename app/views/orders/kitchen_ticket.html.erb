@@ -1,0 +1,51 @@
+<% content_for :title, "Cozinha — Comanda ##{@order.id}" %>
+<% content_for :head do %>
+  <%= javascript_include_tag "qz-tray", "data-turbo-track": "reload" %>
+<% end %>
+
+<div class="max-w-sm mx-auto bg-surface rounded-xl shadow-sm border border-gray-200 p-6 print:shadow-none print:border-0">
+  <div class="text-center mb-4">
+    <h1 class="font-bold text-lg">Cozinha</h1>
+    <p class="text-ink-muted text-sm">
+      <% if @order.mesa? %>
+        Mesa <%= @order.dining_table.number %>
+      <% elsif @order.balcao? %>
+        Venda balcão #<%= @order.id %>
+      <% else %>
+        Delivery — <%= @order.customer_name %>
+      <% end %>
+    </p>
+  </div>
+
+  <% if @items.empty? %>
+    <p class="text-ink-muted text-sm text-center">Nenhum item pendente de envio.</p>
+  <% else %>
+    <ul class="text-sm divide-y divide-gray-100">
+      <% @items.each do |item| %>
+        <li class="py-2">
+          <span class="font-semibold text-base"><%= item.quantity %>x <%= item.product.name %></span>
+          <% if item.notes.present? %>
+            <p class="text-ink-muted text-xs">obs: <%= item.notes %></p>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <div class="no-print mt-6 space-y-2" data-controller="kitchen-print"
+       data-kitchen-print-ticket-url-value="<%= kitchen_ticket_order_path(@order, format: :json) %>"
+       data-kitchen-print-confirm-url-value="<%= kitchen_ticket_confirm_order_path(@order) %>"
+       data-kitchen-print-printer-name-value="<%= PrinterSetting.instance.kitchen_printer_name %>">
+    <button type="button" data-kitchen-print-target="button" data-action="kitchen-print#send"
+            class="w-full rounded-md px-3.5 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium cursor-pointer">
+      Enviar para cozinha
+    </button>
+    <p data-kitchen-print-target="status" class="text-xs text-ink-muted text-center"></p>
+
+    <button data-controller="print" data-action="print#print" class="w-full rounded-md px-3.5 py-2 border border-gray-300 hover:bg-surface-muted font-medium cursor-pointer">
+      Imprimir pelo navegador
+    </button>
+
+    <%= link_to "Voltar para a comanda", order_path(@order), class: "block text-center text-primary-700 hover:underline text-sm" %>
+  </div>
+</div>

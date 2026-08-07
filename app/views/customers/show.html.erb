@@ -1,0 +1,59 @@
+<% content_for :title, @customer.name %>
+
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="font-bold text-2xl"><%= @customer.name %></h1>
+    <p class="text-ink-muted text-sm"><%= @customer.phone %></p>
+  </div>
+  <%= link_to "Editar", edit_customer_path(@customer), class: "text-primary-700 hover:underline text-sm" %>
+</div>
+
+<div class="bg-surface rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+  <p class="text-sm text-ink-muted">Saldo devedor (fiado)</p>
+  <p class="text-3xl font-bold <%= "text-danger" if @customer.fiado_balance.positive? %>">
+    <%= number_to_currency(@customer.fiado_balance, unit: "R$ ", separator: ",", delimiter: ".") %>
+  </p>
+
+  <% if @customer.fiado_balance.positive? %>
+    <%= link_to "Registrar pagamento", new_customer_fiado_settlement_path(@customer),
+          class: "inline-block mt-4 rounded-md px-3.5 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium" %>
+  <% end %>
+</div>
+
+<div class="grid md:grid-cols-2 gap-6">
+  <div class="bg-surface rounded-xl shadow-sm border border-gray-200 p-6">
+    <h2 class="font-semibold text-lg mb-3">Compras fiado</h2>
+    <% fiado_payments = @customer.payments.fiado.includes(:order).order(created_at: :desc) %>
+    <% if fiado_payments.empty? %>
+      <p class="text-ink-muted text-sm">Nenhuma compra fiado ainda.</p>
+    <% else %>
+      <ul class="text-sm divide-y divide-gray-100">
+        <% fiado_payments.each do |payment| %>
+          <li class="py-2 flex justify-between">
+            <span>
+              <%= l(payment.created_at, format: :short) %> —
+              <%= link_to "comanda ##{payment.order_id}", order_path(payment.order), class: "text-primary-700 hover:underline" %>
+            </span>
+            <span class="font-medium"><%= number_to_currency(payment.amount, unit: "R$ ", separator: ",", delimiter: ".") %></span>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+  </div>
+
+  <div class="bg-surface rounded-xl shadow-sm border border-gray-200 p-6">
+    <h2 class="font-semibold text-lg mb-3">Pagamentos recebidos</h2>
+    <% if @customer.fiado_settlements.empty? %>
+      <p class="text-ink-muted text-sm">Nenhum pagamento registrado ainda.</p>
+    <% else %>
+      <ul class="text-sm divide-y divide-gray-100">
+        <% @customer.fiado_settlements.order(created_at: :desc).each do |settlement| %>
+          <li class="py-2 flex justify-between">
+            <span><%= l(settlement.created_at, format: :short) %> — <%= t("enums.payment.method.#{settlement.method}") %></span>
+            <span class="font-medium text-success"><%= number_to_currency(settlement.amount, unit: "R$ ", separator: ",", delimiter: ".") %></span>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+  </div>
+</div>

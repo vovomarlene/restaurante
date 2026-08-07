@@ -1,0 +1,24 @@
+<% content_for :title, "Delivery" %>
+
+<div class="flex items-center justify-between mb-6">
+  <h1 class="font-bold text-2xl">Delivery</h1>
+  <%= link_to "Novo pedido delivery", new_delivery_path, class: "rounded-md px-3.5 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium" %>
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+  <% [
+       ["pendente", "Pendente"],
+       ["em_preparo", "Em preparo"],
+       ["saiu_para_entrega", "Saiu para entrega"],
+       ["entregue", "Entregue"],
+     ].each do |status, label| %>
+    <div>
+      <h2 class="font-semibold text-sm text-ink-muted mb-2"><%= label %></h2>
+      <div class="space-y-3">
+        <% @orders.select { |order| order.delivery_status == status }.each do |order| %>
+          <%= render "order_card", order: order %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

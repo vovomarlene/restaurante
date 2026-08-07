@@ -1,0 +1,23 @@
+mesa_aberta:
+  order_type: mesa
+  status: aberto
+  dining_table: mesa_um
+  opened_by: one
+  opened_at: 2026-08-05 12:00:00
+  service_fee_percent: 10
+
+balcao_fechada:
+  order_type: balcao
+  status: fechado
+  opened_by: two
+  closed_by: two
+  opened_at: 2026-08-05 11:00:00
+  closed_at: 2026-08-05 11:10:00
+
+balcao_fiado:
+  order_type: balcao
+  status: fechado
+  opened_by: two
+  closed_by: two
+  opened_at: 2026-08-06 10:00:00
+  closed_at: 2026-08-06 10:05:00

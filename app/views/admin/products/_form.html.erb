@@ -1,0 +1,61 @@
+<%= form_with model: [:admin, product], class: "space-y-4" do |form| %>
+  <% if product.errors.any? %>
+    <div class="py-2 px-3 bg-red-50 text-red-700 rounded-lg text-sm">
+      <%= product.errors.full_messages.to_sentence %>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :name, "Nome", class: "block text-sm font-medium text-ink-muted mb-1" %>
+    <%= form.text_field :name, class: "block shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-2 w-full" %>
+  </div>
+
+  <div>
+    <%= form.label :description, "Descrição", class: "block text-sm font-medium text-ink-muted mb-1" %>
+    <%= form.text_area :description, rows: 2, class: "block shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-2 w-full" %>
+  </div>
+
+  <div class="flex gap-4">
+    <div class="flex-1">
+      <%= form.label :price, "Preço (R$)", class: "block text-sm font-medium text-ink-muted mb-1" %>
+      <%= form.number_field :price, step: "0.01", class: "block shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-2 w-full" %>
+    </div>
+
+    <div class="flex-1">
+      <%= form.label :category_id, "Categoria", class: "block text-sm font-medium text-ink-muted mb-1" %>
+      <%= form.collection_select :category_id, Category.all, :id, :name, { include_blank: true }, class: "block shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-2 w-full" %>
+    </div>
+  </div>
+
+  <div class="flex items-center gap-2">
+    <%= form.check_box :active, class: "rounded border-gray-300" %>
+    <%= form.label :active, "Ativo", class: "text-sm font-medium text-ink-muted" %>
+  </div>
+
+  <div class="border-t border-gray-200 pt-4" data-controller="nested-form">
+    <h3 class="font-medium text-sm text-ink-muted mb-2">
+      Ficha técnica (insumos consumidos ao vender este produto)
+    </h3>
+
+    <div class="space-y-2 mb-2" data-nested-form-target="items">
+      <%= form.fields_for :recipe_items do |ri_form| %>
+        <%= render "recipe_item_fields", form: ri_form %>
+      <% end %>
+    </div>
+
+    <template data-nested-form-target="template">
+      <%= form.fields_for :recipe_items, RecipeItem.new, child_index: "NEW_RECORD" do |ri_form| %>
+        <%= render "recipe_item_fields", form: ri_form %>
+      <% end %>
+    </template>
+
+    <button type="button" data-action="nested-form#add" class="text-primary-700 hover:underline text-sm font-medium">
+      + Adicionar insumo
+    </button>
+  </div>
+
+  <div class="flex gap-3 pt-2">
+    <%= form.submit "Salvar", class: "rounded-md px-3.5 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium cursor-pointer" %>
+    <%= link_to "Cancelar", admin_products_path, class: "rounded-md px-3.5 py-2 border border-gray-300 hover:bg-surface-muted" %>
+  </div>
+<% end %>

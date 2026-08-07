@@ -1,0 +1,10 @@
+<% content_for :title, "Mesas" %>
+<%= turbo_stream_from "mesas" %>
+
+<h1 class="font-bold text-2xl mb-6">Mesas</h1>
+
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4" id="tables">
+  <% @tables.each do |table| %>
+    <%= render "table_card", table: table %>
+  <% end %>
+</div>

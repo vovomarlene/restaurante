@@ -1,0 +1,98 @@
+<% content_for :title, "Caixa" %>
+
+<h1 class="font-bold text-2xl mb-6">Caixa</h1>
+
+<div class="grid md:grid-cols-2 gap-6">
+  <div class="space-y-6">
+    <div class="bg-surface rounded-xl shadow-sm border border-gray-200 p-6">
+      <h2 class="font-semibold text-lg mb-3">Resumo</h2>
+      <dl class="text-sm space-y-1">
+        <div class="flex justify-between">
+          <dt class="text-ink-muted">Aberto por</dt>
+          <dd><%= @cash_session.opened_by.name %> às <%= l(@cash_session.opened_at, format: :short) %></dd>
+        </div>
+        <div class="flex justify-between">
+          <dt class="text-ink-muted">Fundo de troco</dt>
+          <dd><%= number_to_currency(@cash_session.opening_amount, unit: "R$", separator: ",", delimiter: ".") %></dd>
+        </div>
+        <div class="flex justify-between">
+          <dt class="text-ink-muted">Vendas em dinheiro</dt>
+          <dd><%= number_to_currency(@cash_session.cash_sales_total, unit: "R$", separator: ",", delimiter: ".") %></dd>
+        </div>
+        <div class="flex justify-between">
+          <dt class="text-ink-muted">Fiado recebido (dinheiro)</dt>
+          <dd><%= number_to_currency(@cash_session.fiado_settlements_cash_total, unit: "R$", separator: ",", delimiter: ".") %></dd>
+        </div>
+        <div class="flex justify-between">
+          <dt class="text-ink-muted">Suprimentos</dt>
+          <dd><%= number_to_currency(@cash_session.suprimentos_total, unit: "R$", separator: ",", delimiter: ".") %></dd>
+        </div>
+        <div class="flex justify-between">
+          <dt class="text-ink-muted">Sangrias</dt>
+          <dd>- <%= number_to_currency(@cash_session.sangrias_total, unit: "R$", separator: ",", delimiter: ".") %></dd>
+        </div>
+        <div class="flex justify-between font-bold pt-1 border-t border-gray-100 mt-2">
+          <dt>Esperado em caixa</dt>
+          <dd><%= number_to_currency(@cash_session.compute_expected_amount, unit: "R$", separator: ",", delimiter: ".") %></dd>
+        </div>
+      </dl>
+    </div>
+
+    <div class="bg-surface rounded-xl shadow-sm border border-gray-200 p-6">
+      <h2 class="font-semibold text-lg mb-3">Sangria / suprimento</h2>
+      <%= form_with model: CashMovement.new, url: cash_movements_path, class: "space-y-3" do |form| %>
+        <div>
+          <%= form.label :movement_type, "Tipo", class: "block text-sm font-medium text-ink-muted mb-1" %>
+          <%= form.select :movement_type, [["Sangria (retirada)", "sangria"], ["Suprimento (reforço)", "suprimento"]], {}, class: "block shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-2 w-full" %>
+        </div>
+        <div>
+          <%= form.label :amount, "Valor (R$)", class: "block text-sm font-medium text-ink-muted mb-1" %>
+          <%= form.number_field :amount, step: "0.01", class: "block shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-2 w-full" %>
+        </div>
+        <div>
+          <%= form.label :reason, "Motivo", class: "block text-sm font-medium text-ink-muted mb-1" %>
+          <%= form.text_field :reason, class: "block shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-2 w-full" %>
+        </div>
+        <%= form.submit "Registrar", class: "rounded-md px-3.5 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium cursor-pointer" %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="space-y-6">
+    <div class="bg-surface rounded-xl shadow-sm border border-gray-200 p-6">
+      <h2 class="font-semibold text-lg mb-3">Movimentos</h2>
+      <% if @cash_session.cash_movements.empty? %>
+        <p class="text-ink-muted text-sm">Nenhuma sangria ou suprimento registrado.</p>
+      <% else %>
+        <ul class="divide-y divide-gray-100 text-sm">
+          <% @cash_session.cash_movements.order(created_at: :desc).each do |movement| %>
+            <li class="py-2 flex justify-between">
+              <span>
+                <span class="font-medium"><%= movement.sangria? ? "Sangria" : "Suprimento" %></span>
+                — <%= movement.reason %>
+              </span>
+              <span class="<%= movement.sangria? ? "text-danger" : "text-success" %>">
+                <%= movement.sangria? ? "-" : "+" %><%= number_to_currency(movement.amount, unit: "R$", separator: ",", delimiter: ".") %>
+              </span>
+            </li>
+          <% end %>
+        </ul>
+      <% end %>
+    </div>
+
+    <div class="bg-surface rounded-xl shadow-sm border border-gray-200 p-6">
+      <h2 class="font-semibold text-lg mb-3">Fechar caixa</h2>
+      <%= form_with url: close_cash_session_path, method: :patch, class: "space-y-3" do |form| %>
+        <div>
+          <%= form.label :closing_amount, "Valor contado em caixa (R$)", class: "block text-sm font-medium text-ink-muted mb-1" %>
+          <%= form.number_field :closing_amount, step: "0.01", required: true, class: "block shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-2 w-full" %>
+        </div>
+        <div>
+          <%= form.label :closing_notes, "Observações (opcional)", class: "block text-sm font-medium text-ink-muted mb-1" %>
+          <%= form.text_area :closing_notes, rows: 2, class: "block shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-2 w-full" %>
+        </div>
+        <%= form.submit "Fechar caixa", class: "rounded-md px-3.5 py-2 bg-danger hover:opacity-90 text-white font-medium cursor-pointer", data: { turbo_confirm: "Fechar o caixa? Essa ação não pode ser desfeita." } %>
+      <% end %>
+    </div>
+  </div>
+</div>

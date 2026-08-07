@@ -1,0 +1,11 @@
+mesa_um:
+  number: 1
+  capacity: 4
+  status: ocupada
+  active: true
+
+mesa_dois:
+  number: 2
+  capacity: 2
+  status: livre
+  active: true

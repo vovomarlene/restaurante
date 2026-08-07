@@ -1,0 +1,15 @@
+balcao_fechada_pagamento:
+  order: balcao_fechada
+  cash_session: fechada
+  method: dinheiro
+  amount: 32.00
+  amount_received: 32.00
+  recorded_by: two
+
+balcao_fiado_pagamento:
+  order: balcao_fiado
+  cash_session: fechada
+  method: fiado
+  amount: 18.00
+  customer: maria
+  recorded_by: two

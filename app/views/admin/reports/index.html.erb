@@ -1,0 +1,108 @@
+<% content_for :title, "Relatórios" %>
+
+<div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+  <h1 class="font-bold text-2xl">Relatórios</h1>
+
+  <%= form_with url: admin_reports_path, method: :get, class: "flex items-center gap-2" do |form| %>
+    <%= form.label :date, "Dia", class: "text-sm text-ink-muted" %>
+    <%= form.date_field :date, value: @date.iso8601, class: "shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-1.5 text-sm" %>
+    <%= form.submit "Ver", class: "rounded-md px-3 py-1.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium cursor-pointer" %>
+  <% end %>
+</div>
+
+<div class="grid md:grid-cols-2 gap-6 mb-6">
+  <div class="bg-surface rounded-xl shadow-sm border border-gray-200 p-6">
+    <h2 class="font-semibold text-lg mb-1">Vendas do dia</h2>
+    <p class="text-3xl font-bold text-primary-700 mb-4"><%= number_to_currency(@total_sales, unit: "R$", separator: ",", delimiter: ".") %></p>
+
+    <h3 class="text-sm font-medium text-ink-muted mb-2">Por forma de pagamento</h3>
+    <% if @sales_by_method.empty? %>
+      <p class="text-ink-muted text-sm">Nenhuma venda neste dia.</p>
+    <% else %>
+      <ul class="text-sm divide-y divide-gray-100 mb-4">
+        <% @sales_by_method.each do |method, amount| %>
+          <li class="py-1.5 flex justify-between">
+            <span><%= t("enums.payment.method.#{method}") %></span>
+            <span class="font-medium"><%= number_to_currency(amount, unit: "R$", separator: ",", delimiter: ".") %></span>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+
+    <h3 class="text-sm font-medium text-ink-muted mb-2">Por tipo de venda</h3>
+    <% if @sales_by_order_type.empty? %>
+      <p class="text-ink-muted text-sm">—</p>
+    <% else %>
+      <ul class="text-sm divide-y divide-gray-100">
+        <% @sales_by_order_type.each do |order_type, amount| %>
+          <li class="py-1.5 flex justify-between">
+            <span><%= t("enums.order.order_type.#{order_type}") %></span>
+            <span class="font-medium"><%= number_to_currency(amount, unit: "R$", separator: ",", delimiter: ".") %></span>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+  </div>
+
+  <div class="bg-surface rounded-xl shadow-sm border border-gray-200 p-6">
+    <h2 class="font-semibold text-lg mb-3">Produtos mais vendidos</h2>
+    <% if @top_products.empty? %>
+      <p class="text-ink-muted text-sm">Nenhuma venda neste dia.</p>
+    <% else %>
+      <ul class="text-sm divide-y divide-gray-100">
+        <% @top_products.each do |name, quantity| %>
+          <li class="py-1.5 flex justify-between">
+            <span><%= name %></span>
+            <span class="font-medium"><%= quantity.to_i %> un.</span>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+  </div>
+</div>
+
+<div class="grid md:grid-cols-2 gap-6">
+  <div class="bg-surface rounded-xl shadow-sm border border-gray-200 p-6">
+    <h2 class="font-semibold text-lg mb-3">Estoque baixo</h2>
+    <% if @low_stock_ingredients.empty? %>
+      <p class="text-ink-muted text-sm">Nenhum insumo abaixo do mínimo.</p>
+    <% else %>
+      <ul class="text-sm divide-y divide-gray-100">
+        <% @low_stock_ingredients.each do |ingredient| %>
+          <li class="py-1.5 flex justify-between">
+            <span><%= ingredient.name %></span>
+            <span class="font-medium text-danger"><%= ingredient.current_stock %> / mín. <%= ingredient.min_stock %> <%= ingredient.unit %></span>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+  </div>
+
+  <div class="bg-surface rounded-xl shadow-sm border border-gray-200 p-6">
+    <h2 class="font-semibold text-lg mb-3">Histórico de caixa</h2>
+    <% if @cash_sessions.empty? %>
+      <p class="text-ink-muted text-sm">Nenhum caixa fechado ainda.</p>
+    <% else %>
+      <table class="w-full text-left text-sm">
+        <thead class="text-ink-muted">
+          <tr>
+            <th class="py-1.5 pr-2">Fechado em</th>
+            <th class="py-1.5 pr-2">Operador</th>
+            <th class="py-1.5 text-right">Diferença</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          <% @cash_sessions.each do |session| %>
+            <tr>
+              <td class="py-1.5 pr-2"><%= l(session.closed_at, format: :short) %></td>
+              <td class="py-1.5 pr-2"><%= session.closed_by.name %></td>
+              <td class="py-1.5 text-right font-medium <%= session.difference_amount.negative? ? "text-danger" : "text-success" %>">
+                <%= session.difference_amount.negative? ? "-" : "+" %><%= number_to_currency(session.difference_amount.abs, unit: "R$", separator: ",", delimiter: ".") %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+  </div>
+</div>

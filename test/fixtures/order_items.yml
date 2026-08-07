@@ -1,0 +1,20 @@
+mesa_aberta_refrigerante:
+  order: mesa_aberta
+  product: refrigerante
+  quantity: 2
+  unit_price: 6.00
+  status: ativo
+
+balcao_fechada_feijoada:
+  order: balcao_fechada
+  product: feijoada
+  quantity: 1
+  unit_price: 32.00
+  status: ativo
+
+balcao_fiado_refrigerante:
+  order: balcao_fiado
+  product: refrigerante
+  quantity: 3
+  unit_price: 6.00
+  status: ativo

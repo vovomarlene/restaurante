@@ -1,0 +1,16 @@
+<div class="flex gap-2 items-end" data-nested-form-target="item">
+  <%= form.hidden_field :id %>
+
+  <div class="flex-1">
+    <%= form.label :ingredient_id, "Insumo", class: "block text-xs font-medium text-ink-muted mb-1" %>
+    <%= form.collection_select :ingredient_id, Ingredient.active.order(:name), :id, :name, { include_blank: true }, class: "block shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-2 w-full" %>
+  </div>
+
+  <div class="w-32">
+    <%= form.label :quantity, "Quantidade", class: "block text-xs font-medium text-ink-muted mb-1" %>
+    <%= form.number_field :quantity, step: "0.001", class: "block shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-2 w-full" %>
+  </div>
+
+  <%= form.hidden_field :_destroy %>
+  <button type="button" data-action="nested-form#remove" class="text-danger hover:underline text-sm pb-2">Remover</button>
+</div>

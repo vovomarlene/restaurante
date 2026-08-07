@@ -1,0 +1,27 @@
+<%= form_with model: [:admin, dining_table], class: "space-y-4" do |form| %>
+  <% if dining_table.errors.any? %>
+    <div class="py-2 px-3 bg-red-50 text-red-700 rounded-lg text-sm">
+      <%= dining_table.errors.full_messages.to_sentence %>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :number, "Número", class: "block text-sm font-medium text-ink-muted mb-1" %>
+    <%= form.number_field :number, class: "block shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-2 w-full" %>
+  </div>
+
+  <div>
+    <%= form.label :capacity, "Capacidade (lugares)", class: "block text-sm font-medium text-ink-muted mb-1" %>
+    <%= form.number_field :capacity, class: "block shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-2 w-full" %>
+  </div>
+
+  <div class="flex items-center gap-2">
+    <%= form.check_box :active, class: "rounded border-gray-300" %>
+    <%= form.label :active, "Ativa", class: "text-sm font-medium text-ink-muted" %>
+  </div>
+
+  <div class="flex gap-3">
+    <%= form.submit "Salvar", class: "rounded-md px-3.5 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium cursor-pointer" %>
+    <%= link_to "Cancelar", admin_dining_tables_path, class: "rounded-md px-3.5 py-2 border border-gray-300 hover:bg-surface-muted" %>
+  </div>
+<% end %>
