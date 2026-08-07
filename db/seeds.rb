@@ -7,7 +7,11 @@ admin_password = ENV.fetch("ADMIN_PASSWORD", "restaurante123")
 
 admin = User.find_or_initialize_by(email_address: admin_email)
 admin.assign_attributes(name: "Administrador", role: :admin, active: true)
-admin.password = admin_password if admin.new_record?
+# Só define a senha na criação — depois disso o seed roda de novo a cada
+# deploy (é idempotente) e não deve sobrescrever uma senha trocada manualmente.
+# Para forçar a redefinição uma vez (ex: recuperar acesso), defina
+# ADMIN_RESET_PASSWORD=true temporariamente.
+admin.password = admin_password if admin.new_record? || ENV["ADMIN_RESET_PASSWORD"] == "true"
 admin.save!
 
 puts "Admin: #{admin_email} / senha: #{admin_password}" if admin.previously_new_record?
