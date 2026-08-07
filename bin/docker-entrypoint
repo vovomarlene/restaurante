@@ -5,4 +5,9 @@ if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
   ./bin/rails db:prepare
 fi
 
+# Thruster listens on HTTP_PORT (defaults to 80), but hosts like Railway
+# assign the public port dynamically via PORT — bridge the two so the
+# container actually listens where the platform expects.
+export HTTP_PORT="${PORT:-80}"
+
 exec "${@}"
