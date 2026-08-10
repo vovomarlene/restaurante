@@ -36,6 +36,13 @@
         <%= form.number_field :amount_received, step: "0.01", class: "block shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-2 w-full" %>
       </div>
 
+      <div>
+        <%= form.label :launched_on, "Data de lançamento", class: "block text-sm font-medium text-ink-muted mb-1" %>
+        <%= form.text_field :launched_on, placeholder: "dd/mm/aaaa", pattern: "\\d{2}/\\d{2}/\\d{4}",
+              class: "block shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-2 w-full" %>
+        <p class="text-xs text-ink-muted mt-1">Pra lançar fiados antigos, troque pela data real da dívida.</p>
+      </div>
+
       <div data-payment-method-target="customerField" class="<%= "hidden" unless @payment.fiado? %>">
         <%= form.label :customer_id, "Cliente (fiado)", class: "block text-sm font-medium text-ink-muted mb-1" %>
         <%= form.collection_select :customer_id, Customer.active, :id, :name, { include_blank: "Selecione o cliente" },

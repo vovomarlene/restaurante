@@ -1,6 +1,10 @@
 class Payment < ApplicationRecord
   enum :method, { dinheiro: 0, cartao_debito: 1, cartao_credito: 2, pix: 3, fiado: 4 }
 
+  # Campo só de formulário (dd/mm/aaaa) — deixa lançar fiados antigos com a
+  # data real da dívida em vez da data de hoje. Vira created_at no controller.
+  attr_accessor :launched_on
+
   belongs_to :order
   belongs_to :cash_session
   belongs_to :recorded_by, class_name: "User"
