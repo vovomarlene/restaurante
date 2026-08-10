@@ -97,7 +97,7 @@ class OrdersController < ApplicationController
       @order.update!(service_fee_percent: 0)
       redirect_to @order, notice: "Taxa de serviço removida."
     else
-      @order.update!(service_fee_percent: Order::DEFAULT_SERVICE_FEE_PERCENT)
+      @order.update!(service_fee_percent: Setting.instance.default_service_fee_percent)
       redirect_to @order, notice: "Taxa de serviço reativada."
     end
   end
@@ -135,7 +135,7 @@ class OrdersController < ApplicationController
   end
 
   def printed_restaurant_name
-    PrinterSetting.instance.restaurant_name.presence || t("app.name")
+    Setting.instance.restaurant_name.presence || t("app.name")
   end
 
   def receipt_json(order)

@@ -80,7 +80,7 @@
     <div class="mt-3" data-controller="kitchen-print"
          data-kitchen-print-ticket-url-value="<%= kitchen_ticket_order_path(order, format: :json) %>"
          data-kitchen-print-confirm-url-value="<%= kitchen_ticket_confirm_order_path(order) %>"
-         data-kitchen-print-printer-name-value="<%= PrinterSetting.instance.kitchen_printer_name %>">
+         data-kitchen-print-printer-name-value="<%= Setting.instance.kitchen_printer_name %>">
       <button type="button" data-kitchen-print-target="button" data-action="kitchen-print#send"
               class="w-full rounded-md px-3.5 py-2 border border-primary-600 text-primary-700 hover:bg-primary-50 font-medium cursor-pointer">
         Enviar para cozinha

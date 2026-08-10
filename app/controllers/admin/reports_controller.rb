@@ -1,7 +1,10 @@
 class Admin::ReportsController < Admin::BaseController
+  PERIODS = %w[diario semanal mensal].freeze
+
   def index
     @date = params[:date].present? ? Date.parse(params[:date]) : Date.current
-    range = @date.beginning_of_day..@date.end_of_day
+    @period = PERIODS.include?(params[:period]) ? params[:period] : "diario"
+    range = period_range(@date, @period)
 
     # Exclui pagamentos estornados — uma venda cancelada não deve contar
     # como receita do dia.
@@ -24,5 +27,15 @@ class Admin::ReportsController < Admin::BaseController
     @cash_sessions = CashSession.where(status: :fechada).order(closed_at: :desc).limit(20)
   rescue Date::Error
     redirect_to admin_reports_path, alert: "Data inválida."
+  end
+
+  private
+
+  def period_range(date, period)
+    case period
+    when "semanal" then date.beginning_of_week.beginning_of_day..date.end_of_week.end_of_day
+    when "mensal" then date.beginning_of_month.beginning_of_day..date.end_of_month.end_of_day
+    else date.beginning_of_day..date.end_of_day
+    end
   end
 end

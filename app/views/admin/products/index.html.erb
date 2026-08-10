@@ -26,8 +26,12 @@
           <td class="px-4 py-2"><%= product.recipe_items.size %> insumo(s)</td>
           <td class="px-4 py-2"><%= product.active? ? "Sim" : "Não" %></td>
           <td class="px-4 py-2 text-right space-x-3">
-            <%= link_to "Editar", edit_admin_product_path(product), class: "text-primary-700 hover:underline" %>
-            <%= button_to "Remover", admin_product_path(product), method: :delete, class: "text-danger hover:underline bg-transparent border-0 p-0 cursor-pointer font-normal", form: { data: { turbo_confirm: "Remover este produto?" } } %>
+            <%= link_to edit_admin_product_path(product), class: "inline-flex items-center gap-1 text-primary-700 hover:underline" do %>
+              <%= icon :edit, css_class: "size-4" %> Editar
+            <% end %>
+            <%= button_to admin_product_path(product), method: :delete, class: "inline-flex items-center gap-1 text-danger hover:underline bg-transparent border-0 p-0 cursor-pointer font-normal", form: { data: { turbo_confirm: "Remover este produto?" } } do %>
+              <%= icon :trash, css_class: "size-4" %> Remover
+            <% end %>
           </td>
         </tr>
       <% end %>

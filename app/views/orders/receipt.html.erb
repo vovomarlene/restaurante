@@ -74,7 +74,7 @@
 
   <div class="no-print mt-6 space-y-2" data-controller="qz-receipt-print"
        data-qz-receipt-print-url-value="<%= receipt_order_path(@order, format: :json) %>"
-       data-qz-receipt-print-printer-name-value="<%= PrinterSetting.instance.receipt_printer_name %>">
+       data-qz-receipt-print-printer-name-value="<%= Setting.instance.receipt_printer_name %>">
     <button data-qz-receipt-print-target="button" data-action="qz-receipt-print#print"
             class="w-full rounded-md px-3.5 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium cursor-pointer">
       Imprimir na impressora térmica

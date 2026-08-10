@@ -27,7 +27,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     get receipt_order_path(orders(:balcao_fechada), format: :json)
     assert_equal "Restaurante PDV", response.parsed_body["restaurant_name"]
 
-    PrinterSetting.instance.update!(restaurant_name: "Cantina da Maria")
+    Setting.instance.update!(restaurant_name: "Cantina da Maria")
 
     get receipt_order_path(orders(:balcao_fechada), format: :json)
     assert_equal "Cantina da Maria", response.parsed_body["restaurant_name"]

@@ -26,9 +26,15 @@
           <td class="px-4 py-2"><%= ingredient.min_stock %></td>
           <td class="px-4 py-2"><%= ingredient.active? ? "Sim" : "Não" %></td>
           <td class="px-4 py-2 text-right space-x-3">
-            <%= link_to "Movimentações", admin_ingredient_stock_movements_path(ingredient), class: "text-primary-700 hover:underline" %>
-            <%= link_to "Editar", edit_admin_ingredient_path(ingredient), class: "text-primary-700 hover:underline" %>
-            <%= button_to "Remover", admin_ingredient_path(ingredient), method: :delete, class: "text-danger hover:underline bg-transparent border-0 p-0 cursor-pointer font-normal", form: { data: { turbo_confirm: "Remover este insumo?" } } %>
+            <%= link_to admin_ingredient_stock_movements_path(ingredient), class: "inline-flex items-center gap-1 text-primary-700 hover:underline" do %>
+              <%= icon :clipboard, css_class: "size-4" %> Movimentações
+            <% end %>
+            <%= link_to edit_admin_ingredient_path(ingredient), class: "inline-flex items-center gap-1 text-primary-700 hover:underline" do %>
+              <%= icon :edit, css_class: "size-4" %> Editar
+            <% end %>
+            <%= button_to admin_ingredient_path(ingredient), method: :delete, class: "inline-flex items-center gap-1 text-danger hover:underline bg-transparent border-0 p-0 cursor-pointer font-normal", form: { data: { turbo_confirm: "Remover este insumo?" } } do %>
+              <%= icon :trash, css_class: "size-4" %> Remover
+            <% end %>
           </td>
         </tr>
       <% end %>

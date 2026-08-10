@@ -2,6 +2,19 @@
   app:
     name: "Restaurante PDV"
 
+  # Sobrescreve os formatos padrão do rails-i18n (que usam nome do mês por
+  # extenso) — nesse sistema a data é sempre dd/mm/aaaa.
+  date:
+    formats:
+      default: "%d/%m/%Y"
+      long: "%d/%m/%Y"
+      short: "%d/%m/%Y"
+  time:
+    formats:
+      default: "%d/%m/%Y %H:%M:%S"
+      long: "%d/%m/%Y %H:%M"
+      short: "%d/%m/%Y %H:%M"
+
   enums:
     user:
       role:
@@ -50,7 +63,7 @@
       cash_movement: "Movimento de caixa"
       payment: "Pagamento"
       stock_movement: "Movimento de estoque"
-      printer_setting: "Configuração de impressoras"
+      setting: "Configuração"
       customer: "Cliente"
       fiado_settlement: "Pagamento de fiado"
       refund: "Estorno"
@@ -127,10 +140,11 @@
         payment: "Pagamento"
         amount: "Valor"
         reason: "Motivo"
-      printer_setting:
+      setting:
         restaurant_name: "Nome do restaurante"
         receipt_printer_name: "Impressora do recibo"
         kitchen_printer_name: "Impressora da cozinha"
+        default_service_fee_percent: "Taxa de serviço padrão"
 
   session:
     new:

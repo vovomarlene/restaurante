@@ -1,7 +1,7 @@
-<%= form_with model: printer_setting, url: admin_printer_setting_path, method: :patch, class: "space-y-4" do |form| %>
-  <% if printer_setting.errors.any? %>
+<%= form_with model: setting, url: admin_setting_path, method: :patch, class: "space-y-4" do |form| %>
+  <% if setting.errors.any? %>
     <div class="py-2 px-3 bg-red-50 text-red-700 rounded-lg text-sm">
-      <%= printer_setting.errors.full_messages.to_sentence %>
+      <%= setting.errors.full_messages.to_sentence %>
     </div>
   <% end %>
 
@@ -12,6 +12,13 @@
   </div>
 
   <div>
+    <%= form.label :default_service_fee_percent, "Taxa de serviço padrão (%)", class: "block text-sm font-medium text-ink-muted mb-1" %>
+    <%= form.number_field :default_service_fee_percent, step: "0.01", min: 0,
+          class: "block shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-2 w-full" %>
+    <p class="text-xs text-ink-muted mt-1">Aplicada às comandas de mesa novas. Pode ser desativada por comanda.</p>
+  </div>
+
+  <div class="border-t border-gray-200 pt-4">
     <%= form.label :receipt_printer_name, "Impressora do recibo", class: "block text-sm font-medium text-ink-muted mb-1" %>
     <%= form.text_field :receipt_printer_name, list: "printers-list", data: { printer_detect_target: "receiptInput" },
           class: "block shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-2 w-full" %>

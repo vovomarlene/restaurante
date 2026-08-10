@@ -1,0 +1,15 @@
+<% content_for :title, "Configurações" %>
+<% content_for :head do %>
+  <%= javascript_include_tag "qz-tray", "data-turbo-track": "reload" %>
+<% end %>
+
+<h1 class="font-bold text-2xl mb-2 flex items-center gap-2.5"><%= icon :settings, css_class: "size-6 text-primary-700" %> Configurações</h1>
+<p class="text-ink-muted text-sm mb-6">
+  Dados do restaurante, taxa de serviço padrão e impressoras. Pra impressoras, digite exatamente o
+  nome como ela aparece no sistema (Linux/CUPS), ou use "Detectar impressoras" se o QZ Tray já
+  estiver aberto neste computador.
+</p>
+
+<div class="bg-surface rounded-xl shadow-sm border border-gray-200 p-6 max-w-lg" data-controller="printer-detect">
+  <%= render "form", setting: @setting %>
+</div>

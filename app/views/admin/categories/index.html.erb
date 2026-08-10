@@ -22,8 +22,12 @@
           <td class="px-4 py-2"><%= category.position %></td>
           <td class="px-4 py-2"><%= category.active? ? "Sim" : "Não" %></td>
           <td class="px-4 py-2 text-right space-x-3">
-            <%= link_to "Editar", edit_admin_category_path(category), class: "text-primary-700 hover:underline" %>
-            <%= button_to "Remover", admin_category_path(category), method: :delete, class: "text-danger hover:underline bg-transparent border-0 p-0 cursor-pointer font-normal", form: { data: { turbo_confirm: "Remover esta categoria?" } } %>
+            <%= link_to edit_admin_category_path(category), class: "inline-flex items-center gap-1 text-primary-700 hover:underline" do %>
+              <%= icon :edit, css_class: "size-4" %> Editar
+            <% end %>
+            <%= button_to admin_category_path(category), method: :delete, class: "inline-flex items-center gap-1 text-danger hover:underline bg-transparent border-0 p-0 cursor-pointer font-normal", form: { data: { turbo_confirm: "Remover esta categoria?" } } do %>
+              <%= icon :trash, css_class: "size-4" %> Remover
+            <% end %>
           </td>
         </tr>
       <% end %>

@@ -10,7 +10,7 @@ Rails.application.routes.draw do
     end
     resources :dining_tables
     resources :reports, only: [ :index ]
-    resource :printer_setting, only: [ :edit, :update ]
+    resource :setting, only: [ :edit, :update ]
   end
 
   get "mesas", to: "tables#index", as: :tables

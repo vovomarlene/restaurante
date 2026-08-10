@@ -1,5 +1,4 @@
 class Order < ApplicationRecord
-  DEFAULT_SERVICE_FEE_PERCENT = 10.0
   DELIVERY_STATUS_FLOW = %w[pendente em_preparo saiu_para_entrega entregue].freeze
 
   enum :order_type, { mesa: 0, balcao: 1, delivery: 2 }
@@ -156,7 +155,7 @@ class Order < ApplicationRecord
   end
 
   def set_default_service_fee
-    self.service_fee_percent = DEFAULT_SERVICE_FEE_PERCENT if service_fee_percent.to_f.zero?
+    self.service_fee_percent = Setting.instance.default_service_fee_percent if service_fee_percent.to_f.zero?
   end
 
   def set_default_delivery_status

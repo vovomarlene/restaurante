@@ -47,9 +47,9 @@
             class: "flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-primary-800 hover:text-white #{current_page?(admin_reports_path) ? "bg-primary-800 text-white" : "text-primary-100"}" do %>
         <%= icon :report %> Relatórios
       <% end %>
-      <%= link_to edit_admin_printer_setting_path,
-            class: "flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-primary-800 hover:text-white #{current_page?(edit_admin_printer_setting_path) ? "bg-primary-800 text-white" : "text-primary-100"}" do %>
-        <%= icon :printer %> Impressoras
+      <%= link_to edit_admin_setting_path,
+            class: "flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-primary-800 hover:text-white #{current_page?(edit_admin_setting_path) ? "bg-primary-800 text-white" : "text-primary-100"}" do %>
+        <%= icon :settings %> Configurações
       <% end %>
     <% end %>
   </nav>

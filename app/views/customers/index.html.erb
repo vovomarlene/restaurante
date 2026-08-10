@@ -34,7 +34,9 @@
             <%= number_to_currency(customer.fiado_balance, unit: "R$ ", separator: ",", delimiter: ".") %>
           </td>
           <td class="px-4 py-2 text-right">
-            <%= link_to "Editar", edit_customer_path(customer), class: "text-primary-700 hover:underline" %>
+            <%= link_to edit_customer_path(customer), class: "inline-flex items-center gap-1 text-primary-700 hover:underline" do %>
+              <%= icon :edit, css_class: "size-4" %> Editar
+            <% end %>
           </td>
         </tr>
       <% end %>

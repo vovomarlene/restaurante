@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_10_124713) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_10_133259) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -155,14 +155,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_10_124713) do
     t.index ["recorded_by_id"], name: "index_payments_on_recorded_by_id"
   end
 
-  create_table "printer_settings", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.string "kitchen_printer_name"
-    t.string "receipt_printer_name"
-    t.string "restaurant_name"
-    t.datetime "updated_at", null: false
-  end
-
   create_table "products", force: :cascade do |t|
     t.boolean "active", default: true, null: false
     t.bigint "category_id", null: false
@@ -206,6 +198,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_10_124713) do
     t.string "user_agent"
     t.bigint "user_id", null: false
     t.index ["user_id"], name: "index_sessions_on_user_id"
+  end
+
+  create_table "settings", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.decimal "default_service_fee_percent", precision: 5, scale: 2, default: "10.0", null: false
+    t.string "kitchen_printer_name"
+    t.string "receipt_printer_name"
+    t.string "restaurant_name"
+    t.datetime "updated_at", null: false
   end
 
   create_table "stock_movements", force: :cascade do |t|

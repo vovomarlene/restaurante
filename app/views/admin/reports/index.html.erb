@@ -3,21 +3,26 @@
 <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
   <h1 class="font-bold text-2xl flex items-center gap-2.5"><%= icon :report, css_class: "size-6 text-primary-700" %> Relatórios</h1>
 
-  <%= form_with url: admin_reports_path, method: :get, class: "flex items-center gap-2" do |form| %>
-    <%= form.label :date, "Dia", class: "text-sm text-ink-muted" %>
+  <%= form_with url: admin_reports_path, method: :get, class: "flex items-center gap-2 flex-wrap" do |form| %>
+    <%= form.label :period, "Período", class: "text-sm text-ink-muted" %>
+    <%= form.select :period, [["Diário", "diario"], ["Semanal", "semanal"], ["Mensal", "mensal"]],
+          { selected: @period }, class: "shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-1.5 text-sm" %>
+
+    <%= form.label :date, "Data de referência", class: "text-sm text-ink-muted" %>
     <%= form.date_field :date, value: @date.iso8601, class: "shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-1.5 text-sm" %>
     <%= form.submit "Ver", class: "rounded-md px-3 py-1.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium cursor-pointer" %>
   <% end %>
 </div>
 
 <div class="grid md:grid-cols-2 gap-6 mb-6">
+  <% period_label = { "diario" => "do dia", "semanal" => "da semana", "mensal" => "do mês" }[@period] %>
   <div class="bg-surface rounded-xl shadow-sm border border-gray-200 p-6">
-    <h2 class="font-semibold text-lg mb-1">Vendas do dia</h2>
+    <h2 class="font-semibold text-lg mb-1">Vendas <%= period_label %></h2>
     <p class="text-3xl font-bold text-primary-700 mb-4"><%= number_to_currency(@total_sales, unit: "R$", separator: ",", delimiter: ".") %></p>
 
     <h3 class="text-sm font-medium text-ink-muted mb-2">Por forma de pagamento</h3>
     <% if @sales_by_method.empty? %>
-      <p class="text-ink-muted text-sm">Nenhuma venda neste dia.</p>
+      <p class="text-ink-muted text-sm">Nenhuma venda no período.</p>
     <% else %>
       <ul class="text-sm divide-y divide-gray-100 mb-4">
         <% @sales_by_method.each do |method, amount| %>
@@ -47,7 +52,7 @@
   <div class="bg-surface rounded-xl shadow-sm border border-gray-200 p-6">
     <h2 class="font-semibold text-lg mb-3">Produtos mais vendidos</h2>
     <% if @top_products.empty? %>
-      <p class="text-ink-muted text-sm">Nenhuma venda neste dia.</p>
+      <p class="text-ink-muted text-sm">Nenhuma venda no período.</p>
     <% else %>
       <ul class="text-sm divide-y divide-gray-100">
         <% @top_products.each do |name, quantity| %>
