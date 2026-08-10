@@ -9,7 +9,7 @@
 </div>
 
 <div class="bg-surface rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-  <p class="text-sm text-ink-muted">Saldo devedor (fiado)</p>
+  <p class="text-sm text-ink-muted">Saldo devedor (fiado) — total</p>
   <p class="text-3xl font-bold <%= "text-danger" if @customer.fiado_balance.positive? %>">
     <%= number_to_currency(@customer.fiado_balance, unit: "R$ ", separator: ",", delimiter: ".") %>
   </p>
@@ -20,15 +20,32 @@
   <% end %>
 </div>
 
+<div class="flex items-center justify-between mb-3 flex-wrap gap-3">
+  <h2 class="font-semibold text-lg">Movimentação de fiado</h2>
+
+  <%= form_with url: customer_path(@customer), method: :get, class: "flex items-center gap-2" do |form| %>
+    <%= form.label :period, "Período", class: "text-sm text-ink-muted" %>
+    <%= form.select :period, [["Diário", "diario"], ["Semanal", "semanal"], ["Mensal", "mensal"]],
+          { selected: @period }, class: "shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-1.5 text-sm" %>
+
+    <%= form.label :date, "Data de referência", class: "text-sm text-ink-muted" %>
+    <%= form.text_field :date, value: @date.strftime("%d/%m/%Y"), placeholder: "dd/mm/aaaa", pattern: "\\d{2}/\\d{2}/\\d{4}",
+          class: "shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-1.5 text-sm w-28" %>
+    <%= form.submit "Ver", class: "rounded-md px-3 py-1.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium cursor-pointer" %>
+  <% end %>
+</div>
+
 <div class="grid md:grid-cols-2 gap-6">
   <div class="bg-surface rounded-xl shadow-sm border border-gray-200 p-6">
-    <h2 class="font-semibold text-lg mb-3">Compras fiado</h2>
-    <% fiado_payments = @customer.payments.fiado.includes(:order).order(created_at: :desc) %>
-    <% if fiado_payments.empty? %>
-      <p class="text-ink-muted text-sm">Nenhuma compra fiado ainda.</p>
+    <div class="flex items-baseline justify-between mb-3">
+      <h3 class="font-semibold">Comprou fiado no período</h3>
+      <span class="font-bold text-danger"><%= number_to_currency(@period_fiado_total, unit: "R$ ", separator: ",", delimiter: ".") %></span>
+    </div>
+    <% if @fiado_payments.empty? %>
+      <p class="text-ink-muted text-sm">Nenhuma compra fiado no período.</p>
     <% else %>
       <ul class="text-sm divide-y divide-gray-100">
-        <% fiado_payments.each do |payment| %>
+        <% @fiado_payments.each do |payment| %>
           <li class="py-2 flex justify-between">
             <span>
               <%= l(payment.created_at, format: :short) %> —
@@ -42,12 +59,15 @@
   </div>
 
   <div class="bg-surface rounded-xl shadow-sm border border-gray-200 p-6">
-    <h2 class="font-semibold text-lg mb-3">Pagamentos recebidos</h2>
-    <% if @customer.fiado_settlements.empty? %>
-      <p class="text-ink-muted text-sm">Nenhum pagamento registrado ainda.</p>
+    <div class="flex items-baseline justify-between mb-3">
+      <h3 class="font-semibold">Pagou no período</h3>
+      <span class="font-bold text-success"><%= number_to_currency(@period_settled_total, unit: "R$ ", separator: ",", delimiter: ".") %></span>
+    </div>
+    <% if @fiado_settlements.empty? %>
+      <p class="text-ink-muted text-sm">Nenhum pagamento no período.</p>
     <% else %>
       <ul class="text-sm divide-y divide-gray-100">
-        <% @customer.fiado_settlements.order(created_at: :desc).each do |settlement| %>
+        <% @fiado_settlements.each do |settlement| %>
           <li class="py-2 flex justify-between">
             <span><%= l(settlement.created_at, format: :short) %> — <%= t("enums.payment.method.#{settlement.method}") %></span>
             <span class="font-medium text-success"><%= number_to_currency(settlement.amount, unit: "R$ ", separator: ",", delimiter: ".") %></span>

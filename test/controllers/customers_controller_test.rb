@@ -25,4 +25,27 @@ class CustomersControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to customer_path(Customer.find_by!(name: "Ana Lima"))
   end
+
+  test "show lists this month's fiado activity by default and always shows the total balance" do
+    maria = customers(:maria)
+    # fixture: comprou 18,00 fiado, pagou 10,00 -> saldo 8,00
+    assert_equal 8.00, maria.fiado_balance
+
+    get customer_path(maria)
+
+    assert_response :success
+    assert_match "comanda ##{payments(:balcao_fiado_pagamento).order_id}", response.body
+    assert_match "8,00", response.body
+  end
+
+  test "show filters fiado activity by the given period, without touching the total balance" do
+    maria = customers(:maria)
+
+    get customer_path(maria, period: "diario", date: "01/01/2020")
+
+    assert_response :success
+    assert_no_match "comanda ##{payments(:balcao_fiado_pagamento).order_id}", response.body
+    # o saldo total continua aparecendo mesmo sem nenhuma atividade no período filtrado
+    assert_match "8,00", response.body
+  end
 end

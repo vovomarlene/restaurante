@@ -1,4 +1,6 @@
 class CustomersController < ApplicationController
+  include PeriodFilterable
+
   before_action :set_customer, only: [ :show, :edit, :update, :destroy ]
 
   def index
@@ -8,6 +10,16 @@ class CustomersController < ApplicationController
   end
 
   def show
+    @date = params[:date].present? ? Date.strptime(params[:date], "%d/%m/%Y") : Date.current
+    @period = PeriodFilterable::PERIODS.include?(params[:period]) ? params[:period] : "mensal"
+    range = period_range(@date, @period)
+
+    @fiado_payments = @customer.payments.fiado.includes(:order).where(created_at: range).order(created_at: :desc)
+    @fiado_settlements = @customer.fiado_settlements.where(created_at: range).order(created_at: :desc)
+    @period_fiado_total = @fiado_payments.sum(&:net_amount)
+    @period_settled_total = @fiado_settlements.sum(:amount)
+  rescue Date::Error
+    redirect_to customer_path(@customer), alert: "Data inválida."
   end
 
   def new

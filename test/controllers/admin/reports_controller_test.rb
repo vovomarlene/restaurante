@@ -18,4 +18,15 @@ class Admin::ReportsControllerTest < ActionDispatch::IntegrationTest
     assert_match "32,00", response.body
     assert_match "Balcão", response.body
   end
+
+  test "shows fiado purchases broken down by customer" do
+    sign_in_as(users(:two))
+
+    get admin_reports_path
+
+    assert_response :success
+    # fixture: Maria comprou 18,00 fiado hoje
+    assert_match "Maria Souza", response.body
+    assert_match "18,00", response.body
+  end
 end

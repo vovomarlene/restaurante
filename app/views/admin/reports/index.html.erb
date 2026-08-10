@@ -67,6 +67,24 @@
   </div>
 </div>
 
+<div class="bg-surface rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+  <h2 class="font-semibold text-lg mb-1 flex items-center gap-2"><%= icon :customers, css_class: "size-5 text-primary-700" %> Fiado <%= period_label %>, por cliente</h2>
+  <p class="text-3xl font-bold text-primary-700 mb-4"><%= number_to_currency(@fiado_by_customer.values.sum, unit: "R$", separator: ",", delimiter: ".") %></p>
+
+  <% if @fiado_by_customer.empty? %>
+    <p class="text-ink-muted text-sm">Nenhuma compra fiado no período.</p>
+  <% else %>
+    <ul class="text-sm divide-y divide-gray-100">
+      <% @fiado_by_customer.each do |customer_name, amount| %>
+        <li class="py-1.5 flex justify-between">
+          <span><%= customer_name %></span>
+          <span class="font-medium"><%= number_to_currency(amount, unit: "R$", separator: ",", delimiter: ".") %></span>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+</div>
+
 <div class="grid md:grid-cols-2 gap-6">
   <div class="bg-surface rounded-xl shadow-sm border border-gray-200 p-6">
     <h2 class="font-semibold text-lg mb-3">Estoque baixo</h2>
