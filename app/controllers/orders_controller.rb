@@ -1,6 +1,16 @@
 class OrdersController < ApplicationController
-  before_action :set_order, only: [ :show, :receipt, :kitchen_ticket, :kitchen_ticket_confirm ]
+  before_action :set_order, only: [ :show, :receipt, :kitchen_ticket, :kitchen_ticket_confirm, :cancel ]
   before_action :require_open_order, only: [ :kitchen_ticket, :kitchen_ticket_confirm ]
+
+  def index
+    @date = params[:date].present? ? Date.parse(params[:date]) : Date.current
+    range = @date.beginning_of_day..@date.end_of_day
+
+    @orders = Order.where(opened_at: range).order(opened_at: :desc)
+    @orders = @orders.where(status: params[:status]) if params[:status].present?
+  rescue Date::Error
+    redirect_to orders_path, alert: "Data inválida."
+  end
 
   def create
     @order = Order.new(order_params)
@@ -44,6 +54,34 @@ class OrdersController < ApplicationController
     ids = Array(params[:order_item_ids]).map(&:to_i)
     pending_kitchen_items(@order).where(id: ids).update_all(sent_to_kitchen_at: Time.current)
     head :no_content
+  end
+
+  # GET mostra a confirmação (com motivo, se a comanda já estiver fechada);
+  # POST executa. Comanda aberta sem pagamento: cancel! (qualquer usuário).
+  # Comanda fechada/paga: refund! (só admin, motivo obrigatório).
+  def cancel
+    if @order.fechado? && !current_user_admin?
+      redirect_to orders_path, alert: "Só administradores podem estornar uma venda já paga."
+      return
+    end
+
+    return unless request.post?
+
+    if @order.aberto?
+      if @order.cancel!
+        redirect_to orders_path, notice: "Comanda cancelada."
+      else
+        redirect_to orders_path, alert: @order.errors.full_messages.to_sentence
+      end
+    elsif @order.fechado?
+      if @order.refund!(reason: params[:reason], recorded_by: Current.user)
+        redirect_to orders_path, notice: "Venda estornada."
+      else
+        redirect_to cancel_order_path(@order), alert: @order.errors.full_messages.to_sentence
+      end
+    else
+      redirect_to orders_path, alert: "Esta comanda já está cancelada."
+    end
   end
 
   private

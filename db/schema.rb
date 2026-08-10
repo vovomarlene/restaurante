@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_07_160916) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_10_103150) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -186,6 +186,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_07_160916) do
     t.index ["product_id"], name: "index_recipe_items_on_product_id"
   end
 
+  create_table "refunds", force: :cascade do |t|
+    t.decimal "amount", precision: 10, scale: 2, null: false
+    t.bigint "cash_session_id", null: false
+    t.datetime "created_at", null: false
+    t.bigint "payment_id", null: false
+    t.text "reason", null: false
+    t.bigint "recorded_by_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cash_session_id"], name: "index_refunds_on_cash_session_id"
+    t.index ["payment_id"], name: "index_refunds_on_payment_id"
+    t.index ["recorded_by_id"], name: "index_refunds_on_recorded_by_id"
+  end
+
   create_table "sessions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "ip_address"
@@ -241,6 +254,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_07_160916) do
   add_foreign_key "products", "categories"
   add_foreign_key "recipe_items", "ingredients"
   add_foreign_key "recipe_items", "products"
+  add_foreign_key "refunds", "cash_sessions"
+  add_foreign_key "refunds", "payments"
+  add_foreign_key "refunds", "users", column: "recorded_by_id"
   add_foreign_key "sessions", "users"
   add_foreign_key "stock_movements", "ingredients"
   add_foreign_key "stock_movements", "order_items"

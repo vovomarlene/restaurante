@@ -45,4 +45,13 @@ class CashSessionTest < ActiveSupport::TestCase
     assert_equal 10.00, session.fiado_settlements_cash_total
     assert_equal 142.00, session.compute_expected_amount
   end
+
+  test "refunds paid in cash are subtracted from the expected amount" do
+    session = cash_sessions(:aberta)
+    # fixture: venda em dinheiro de R$20 estornada de volta no mesmo valor
+    assert_equal 20.00, session.refunds_cash_total
+    # não muda o esperado da sessão "aberta" (venda e estorno se cancelam),
+    # ver comentário do fixture em test/fixtures/refunds.yml
+    assert_equal 130.00, session.compute_expected_amount
+  end
 end

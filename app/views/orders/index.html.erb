@@ -1,0 +1,69 @@
+<% content_for :title, "Vendas" %>
+
+<div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+  <h1 class="font-bold text-2xl">Vendas</h1>
+
+  <%= form_with url: orders_path, method: :get, class: "flex items-center gap-2" do |form| %>
+    <%= form.label :date, "Dia", class: "text-sm text-ink-muted" %>
+    <%= form.date_field :date, value: @date.iso8601, class: "shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-1.5 text-sm" %>
+
+    <%= form.label :status, "Status", class: "text-sm text-ink-muted" %>
+    <%= form.select :status, [["Todos", ""], ["Aberta", "aberto"], ["Fechada", "fechado"], ["Cancelada", "cancelado"]],
+          { selected: params[:status] }, class: "shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-1.5 text-sm" %>
+
+    <%= form.submit "Ver", class: "rounded-md px-3 py-1.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium cursor-pointer" %>
+  <% end %>
+</div>
+
+<div class="bg-surface rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+  <table class="w-full text-left text-sm">
+    <thead class="bg-surface-muted text-ink-muted">
+      <tr>
+        <th class="px-4 py-2">Horário</th>
+        <th class="px-4 py-2">Tipo</th>
+        <th class="px-4 py-2">Mesa / Cliente</th>
+        <th class="px-4 py-2">Total</th>
+        <th class="px-4 py-2">Status</th>
+        <th class="px-4 py-2"></th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-100">
+      <% if @orders.empty? %>
+        <tr><td class="px-4 py-4 text-ink-muted" colspan="6">Nenhuma venda neste dia.</td></tr>
+      <% end %>
+      <% @orders.each do |order| %>
+        <tr>
+          <td class="px-4 py-2"><%= l(order.opened_at, format: :short) %></td>
+          <td class="px-4 py-2"><%= t("enums.order.order_type.#{order.order_type}") %></td>
+          <td class="px-4 py-2">
+            <% if order.mesa? %>
+              Mesa <%= order.dining_table&.number %>
+            <% elsif order.delivery? %>
+              <%= order.customer_name %>
+            <% else %>
+              —
+            <% end %>
+          </td>
+          <td class="px-4 py-2"><%= number_to_currency(order.total, unit: "R$ ", separator: ",", delimiter: ".") %></td>
+          <td class="px-4 py-2">
+            <% badge_class = { "aberto" => "bg-blue-100 text-blue-800", "fechado" => "bg-green-100 text-green-800", "cancelado" => "bg-red-100 text-red-800" }[order.status] %>
+            <span class="px-2 py-0.5 rounded-full text-xs font-medium <%= badge_class %>">
+              <%= { "aberto" => "Aberta", "fechado" => "Fechada", "cancelado" => "Cancelada" }[order.status] %>
+            </span>
+          </td>
+          <td class="px-4 py-2 text-right space-x-3">
+            <% if order.aberto? %>
+              <%= link_to "Ver comanda", order_path(order), class: "text-primary-700 hover:underline" %>
+              <%= link_to "Cancelar", cancel_order_path(order), class: "text-danger hover:underline" %>
+            <% elsif order.fechado? %>
+              <%= link_to "Recibo", receipt_order_path(order), class: "text-primary-700 hover:underline" %>
+              <% if current_user_admin? %>
+                <%= link_to "Cancelar venda", cancel_order_path(order), class: "text-danger hover:underline" %>
+              <% end %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

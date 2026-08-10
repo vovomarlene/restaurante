@@ -7,8 +7,10 @@ class Customer < ApplicationRecord
   scope :active, -> { where(active: true) }
   default_scope { order(:name) }
 
+  # Soma líquida (desconta estornos) — uma compra fiado cancelada não deve
+  # continuar contando como dívida do cliente.
   def fiado_total
-    payments.fiado.sum(:amount)
+    payments.fiado.sum(&:net_amount)
   end
 
   def fiado_paid_total

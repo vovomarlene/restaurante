@@ -12,6 +12,8 @@
           class: "block px-3 py-2 rounded-md hover:bg-primary-800 hover:text-white #{current_page?(deliveries_path) ? "bg-primary-800 text-white" : "text-primary-100"}" %>
     <%= link_to "Clientes", customers_path,
           class: "block px-3 py-2 rounded-md hover:bg-primary-800 hover:text-white #{current_page?(customers_path) ? "bg-primary-800 text-white" : "text-primary-100"}" %>
+    <%= link_to "Vendas", orders_path,
+          class: "block px-3 py-2 rounded-md hover:bg-primary-800 hover:text-white #{current_page?(orders_path) ? "bg-primary-800 text-white" : "text-primary-100"}" %>
 
     <% if current_user_admin? %>
       <p class="px-3 pt-4 pb-1 text-xs font-semibold uppercase tracking-wide text-primary-300">Administração</p>

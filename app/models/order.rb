@@ -88,6 +88,40 @@ class Order < ApplicationRecord
     true
   end
 
+  # Cancela uma comanda já fechada/paga: estorna cada pagamento (nunca edita
+  # o Payment original, só compensa com um Refund — mesmo princípio do
+  # StockMovement), devolve o estoque e libera a mesa. Exige caixa aberto
+  # porque um estorno em dinheiro precisa sair do caixa físico agora.
+  def refund!(reason:, recorded_by:)
+    with_lock do
+      unless fechado?
+        errors.add(:base, "Só é possível estornar uma comanda fechada.")
+        return false
+      end
+
+      if reason.blank?
+        errors.add(:base, "Informe o motivo do estorno.")
+        return false
+      end
+
+      cash_session = CashSession.current
+      unless cash_session
+        errors.add(:base, "É necessário abrir o caixa para estornar uma venda.")
+        return false
+      end
+
+      payments.each do |payment|
+        Refund.create!(payment: payment, cash_session: cash_session, amount: payment.amount, reason: reason, recorded_by: recorded_by)
+      end
+
+      order_items.active.each(&:cancel!)
+      update!(status: :cancelado, closed_at: Time.current)
+      free_table
+    end
+
+    true
+  end
+
   # Avança para o próximo estágio do preparo/entrega. Não faz nada além do
   # último estágio (entregue) — o pedido é encerrado via pagamento, não aqui.
   def advance_delivery_status!

@@ -21,3 +21,11 @@ balcao_fiado:
   closed_by: two
   opened_at: 2026-08-06 10:00:00
   closed_at: 2026-08-06 10:05:00
+
+balcao_estornada:
+  order_type: balcao
+  status: cancelado
+  opened_by: two
+  closed_by: two
+  opened_at: 2026-08-04 09:00:00
+  closed_at: 2026-08-04 09:20:00

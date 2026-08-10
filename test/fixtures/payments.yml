@@ -13,3 +13,11 @@ balcao_fiado_pagamento:
   amount: 18.00
   customer: maria
   recorded_by: two
+
+balcao_estornada_pagamento:
+  order: balcao_estornada
+  cash_session: aberta
+  method: dinheiro
+  amount: 20.00
+  amount_received: 20.00
+  recorded_by: two

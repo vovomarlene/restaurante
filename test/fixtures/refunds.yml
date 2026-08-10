@@ -1,0 +1,6 @@
+balcao_estornada_estorno:
+  payment: balcao_estornada_pagamento
+  cash_session: aberta
+  amount: 20.00
+  reason: Pedido cancelado a pedido do cliente
+  recorded_by: two

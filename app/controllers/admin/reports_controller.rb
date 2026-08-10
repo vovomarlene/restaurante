@@ -3,7 +3,9 @@ class Admin::ReportsController < Admin::BaseController
     @date = params[:date].present? ? Date.parse(params[:date]) : Date.current
     range = @date.beginning_of_day..@date.end_of_day
 
-    payments_in_range = Payment.joins(:order).where(created_at: range)
+    # Exclui pagamentos estornados — uma venda cancelada não deve contar
+    # como receita do dia.
+    payments_in_range = Payment.joins(:order).where(created_at: range).where.not(id: Refund.select(:payment_id))
 
     @sales_by_method = payments_in_range.group(:method).sum(:amount)
     @sales_by_order_type = payments_in_range.group("orders.order_type").sum(:amount)

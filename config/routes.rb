@@ -15,13 +15,15 @@ Rails.application.routes.draw do
 
   get "mesas", to: "tables#index", as: :tables
 
-  resources :orders, only: [ :create, :show ] do
+  resources :orders, only: [ :create, :show, :index ] do
     resources :order_items, only: [ :create, :destroy ]
     resources :payments, only: [ :new, :create ]
     member do
       get :receipt
       get :kitchen_ticket
       post :kitchen_ticket_confirm
+      get :cancel
+      post :cancel
     end
   end
 

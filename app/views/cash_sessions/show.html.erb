@@ -31,6 +31,10 @@
           <dt class="text-ink-muted">Sangrias</dt>
           <dd>- <%= number_to_currency(@cash_session.sangrias_total, unit: "R$", separator: ",", delimiter: ".") %></dd>
         </div>
+        <div class="flex justify-between">
+          <dt class="text-ink-muted">Estornos (dinheiro)</dt>
+          <dd>- <%= number_to_currency(@cash_session.refunds_cash_total, unit: "R$", separator: ",", delimiter: ".") %></dd>
+        </div>
         <div class="flex justify-between font-bold pt-1 border-t border-gray-100 mt-2">
           <dt>Esperado em caixa</dt>
           <dd><%= number_to_currency(@cash_session.compute_expected_amount, unit: "R$", separator: ",", delimiter: ".") %></dd>

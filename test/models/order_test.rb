@@ -79,4 +79,44 @@ class OrderTest < ActiveSupport::TestCase
     assert_equal 0, order.service_fee_amount
     assert_equal 37.00, order.total # 32,00 (feijoada) + 5,00 (entrega)
   end
+
+  test "refund! reverses stock, creates a Refund per payment, and cancels the order" do
+    order = orders(:balcao_fechada)
+    ingredient = ingredients(:feijao)
+    stock_before = ingredient.current_stock
+
+    assert order.refund!(reason: "Cliente reclamou", recorded_by: users(:two))
+
+    order.reload
+    assert order.cancelado?
+    assert order.order_items.active.none?
+    assert_equal stock_before + 0.3, ingredient.reload.current_stock
+
+    refund = Refund.find_by(payment: payments(:balcao_fechada_pagamento))
+    assert refund.present?
+    assert_equal 32.00, refund.amount
+    assert_equal "Cliente reclamou", refund.reason
+  end
+
+  test "refund! requires the order to be fechado" do
+    order = orders(:mesa_aberta)
+
+    assert_not order.refund!(reason: "teste", recorded_by: users(:two))
+    assert order.errors[:base].present?
+  end
+
+  test "refund! requires a reason" do
+    order = orders(:balcao_fechada)
+
+    assert_not order.refund!(reason: "", recorded_by: users(:two))
+    assert order.errors[:base].present?
+  end
+
+  test "refund! requires an open cash session" do
+    CashSession.open.update_all(status: CashSession.statuses[:fechada])
+    order = orders(:balcao_fechada)
+
+    assert_not order.refund!(reason: "teste", recorded_by: users(:two))
+    assert order.errors[:base].present?
+  end
 end

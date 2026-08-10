@@ -43,4 +43,11 @@ class PaymentTest < ActiveSupport::TestCase
     # fixture: só o pagamento em dinheiro (R$32,00) deve contar; o fiado (R$18,00) não
     assert_equal 32.00, session.cash_sales_total
   end
+
+  test "net_amount discounts refunds without touching the original amount" do
+    payment = payments(:balcao_estornada_pagamento)
+    # fixture: pagamento de R$20,00 totalmente estornado
+    assert_equal 20.00, payment.amount
+    assert_equal 0, payment.net_amount
+  end
 end

@@ -53,6 +53,7 @@
       printer_setting: "Configuração de impressoras"
       customer: "Cliente"
       fiado_settlement: "Pagamento de fiado"
+      refund: "Estorno"
     attributes:
       user:
         name: "Nome"
@@ -121,6 +122,10 @@
         method: "Forma de pagamento"
         amount: "Valor"
         notes: "Observações"
+      refund:
+        payment: "Pagamento"
+        amount: "Valor"
+        reason: "Motivo"
       printer_setting:
         restaurant_name: "Nome do restaurante"
         receipt_printer_name: "Impressora do recibo"

@@ -5,6 +5,7 @@ class Payment < ApplicationRecord
   belongs_to :cash_session
   belongs_to :recorded_by, class_name: "User"
   belongs_to :customer, optional: true
+  has_many :refunds, dependent: :restrict_with_error
 
   validates :amount, numericality: { greater_than: 0 }
   validates :amount_received, numericality: { greater_than_or_equal_to: :amount }, if: -> { dinheiro? && amount_received.present? }
@@ -16,6 +17,10 @@ class Payment < ApplicationRecord
     return 0 unless dinheiro? && amount_received
 
     (amount_received - amount).round(2)
+  end
+
+  def net_amount
+    amount - refunds.sum(:amount)
   end
 
   private

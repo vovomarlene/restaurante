@@ -7,6 +7,7 @@ class CashSession < ApplicationRecord
   has_many :cash_movements, dependent: :restrict_with_error
   has_many :payments, dependent: :restrict_with_error
   has_many :fiado_settlements, dependent: :restrict_with_error
+  has_many :refunds, dependent: :restrict_with_error
 
   validates :opening_amount, numericality: { greater_than_or_equal_to: 0 }
 
@@ -34,8 +35,12 @@ class CashSession < ApplicationRecord
     fiado_settlements.where(method: :dinheiro).sum(:amount)
   end
 
+  def refunds_cash_total
+    refunds.joins(:payment).where(payments: { method: :dinheiro }).sum(:amount)
+  end
+
   def compute_expected_amount
-    opening_amount + cash_sales_total + fiado_settlements_cash_total + suprimentos_total - sangrias_total
+    opening_amount + cash_sales_total + fiado_settlements_cash_total + suprimentos_total - sangrias_total - refunds_cash_total
   end
 
   # Retorna true/false (como `save`) em vez de levantar exceção, para que a
