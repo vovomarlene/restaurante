@@ -1,5 +1,5 @@
 class OrdersController < ApplicationController
-  before_action :set_order, only: [ :show, :receipt, :kitchen_ticket, :kitchen_ticket_confirm, :cancel ]
+  before_action :set_order, only: [ :show, :receipt, :kitchen_ticket, :kitchen_ticket_confirm, :cancel, :toggle_service_fee ]
   before_action :require_open_order, only: [ :kitchen_ticket, :kitchen_ticket_confirm ]
 
   def index
@@ -82,6 +82,23 @@ class OrdersController < ApplicationController
       end
     else
       redirect_to orders_path, alert: "Esta comanda já está cancelada."
+    end
+  end
+
+  # A taxa de serviço é opcional por lei — o cliente pode recusar. Alterna
+  # entre 0% (removida) e o padrão, só enquanto a comanda ainda está aberta.
+  def toggle_service_fee
+    unless @order.mesa? && @order.aberto?
+      redirect_to @order, alert: "Não é possível alterar a taxa de serviço desta comanda."
+      return
+    end
+
+    if @order.service_fee_percent.to_f.positive?
+      @order.update!(service_fee_percent: 0)
+      redirect_to @order, notice: "Taxa de serviço removida."
+    else
+      @order.update!(service_fee_percent: Order::DEFAULT_SERVICE_FEE_PERCENT)
+      redirect_to @order, notice: "Taxa de serviço reativada."
     end
   end
 

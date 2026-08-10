@@ -1,0 +1,17 @@
+<div class="bg-surface rounded-xl border border-gray-200 shadow-sm p-4 text-sm space-y-2">
+  <div class="flex items-center justify-between">
+    <p class="font-semibold">Venda #<%= order.id %></p>
+    <span class="text-xs text-ink-muted"><%= l(order.opened_at, format: :short) %></span>
+  </div>
+
+  <p class="font-semibold text-lg"><%= number_to_currency(order.total, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+
+  <div class="flex items-center justify-between gap-2 pt-1">
+    <%= link_to order_path(order), class: "flex items-center gap-1 text-primary-700 hover:underline text-xs font-medium" do %>
+      <%= icon :eye, css_class: "size-3.5" %> Ver comanda
+    <% end %>
+    <%= link_to cancel_order_path(order), class: "flex items-center gap-1 text-danger hover:underline text-xs font-medium" do %>
+      <%= icon :trash, css_class: "size-3.5" %> Cancelar
+    <% end %>
+  </div>
+</div>

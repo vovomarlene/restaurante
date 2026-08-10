@@ -40,8 +40,14 @@
     </div>
 
     <% if order.mesa? %>
-      <div class="flex justify-between">
-        <span class="text-ink-muted">Taxa de serviço (<%= order.service_fee_percent.to_i %>%)</span>
+      <div class="flex justify-between items-center gap-2">
+        <span class="text-ink-muted">
+          Taxa de serviço<% if order.service_fee_percent.to_f.positive? %> (<%= order.service_fee_percent.to_i %>%)<% end %>
+          <% if order.aberto? %>
+            <%= button_to (order.service_fee_percent.to_f.positive? ? "desativar" : "reativar"), toggle_service_fee_order_path(order), method: :patch,
+                  class: "text-primary-700 hover:underline bg-transparent border-0 p-0 cursor-pointer font-normal text-xs align-middle" %>
+          <% end %>
+        </span>
         <span><%= number_to_currency(order.service_fee_amount, unit: "R$", separator: ",", delimiter: ".") %></span>
       </div>
     <% end %>

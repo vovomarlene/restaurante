@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   end
 
   get "mesas", to: "tables#index", as: :tables
+  get "balcao", to: "balcao#index", as: :balcao
 
   resources :orders, only: [ :create, :show, :index ] do
     resources :order_items, only: [ :create, :destroy ]
@@ -24,6 +25,7 @@ Rails.application.routes.draw do
       post :kitchen_ticket_confirm
       get :cancel
       post :cancel
+      patch :toggle_service_fee
     end
   end
 

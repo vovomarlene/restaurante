@@ -1,7 +1,7 @@
 <% content_for :title, "Insumos" %>
 
 <div class="flex items-center justify-between mb-6">
-  <h1 class="font-bold text-2xl">Insumos</h1>
+  <h1 class="font-bold text-2xl flex items-center gap-2.5"><%= icon :ingredient, css_class: "size-6 text-primary-700" %> Insumos</h1>
   <%= link_to "Novo insumo", new_admin_ingredient_path, class: "rounded-md px-3.5 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium" %>
 </div>
 

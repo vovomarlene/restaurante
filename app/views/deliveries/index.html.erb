@@ -1,7 +1,7 @@
 <% content_for :title, "Delivery" %>
 
 <div class="flex items-center justify-between mb-6">
-  <h1 class="font-bold text-2xl">Delivery</h1>
+  <h1 class="font-bold text-2xl flex items-center gap-2.5"><%= icon :delivery, css_class: "size-6 text-primary-700" %> Delivery</h1>
   <%= link_to "Novo pedido delivery", new_delivery_path, class: "rounded-md px-3.5 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium" %>
 </div>
 

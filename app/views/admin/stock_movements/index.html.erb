@@ -2,7 +2,7 @@
 
 <div class="flex items-center justify-between mb-6">
   <div>
-    <h1 class="font-bold text-2xl"><%= @ingredient.name %></h1>
+    <h1 class="font-bold text-2xl flex items-center gap-2.5"><%= icon :ingredient, css_class: "size-6 text-primary-700" %> <%= @ingredient.name %></h1>
     <p class="text-ink-muted text-sm">Estoque atual: <%= @ingredient.current_stock %> <%= @ingredient.unit %></p>
   </div>
   <div class="flex gap-3">

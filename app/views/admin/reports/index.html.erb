@@ -1,7 +1,7 @@
 <% content_for :title, "Relatórios" %>
 
 <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
-  <h1 class="font-bold text-2xl">Relatórios</h1>
+  <h1 class="font-bold text-2xl flex items-center gap-2.5"><%= icon :report, css_class: "size-6 text-primary-700" %> Relatórios</h1>
 
   <%= form_with url: admin_reports_path, method: :get, class: "flex items-center gap-2" do |form| %>
     <%= form.label :date, "Dia", class: "text-sm text-ink-muted" %>

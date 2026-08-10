@@ -70,4 +70,25 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_entity
   end
+
+  test "toggle_service_fee removes the fee, then a second call reactivates the default" do
+    order = orders(:mesa_aberta)
+    assert_equal 10, order.service_fee_percent
+
+    patch toggle_service_fee_order_path(order)
+    assert_redirected_to order_path(order)
+    assert_equal 0, order.reload.service_fee_percent
+
+    patch toggle_service_fee_order_path(order)
+    assert_equal 10, order.reload.service_fee_percent
+  end
+
+  test "toggle_service_fee is blocked for an order that is not open" do
+    order = orders(:balcao_fechada)
+
+    patch toggle_service_fee_order_path(order)
+
+    assert_redirected_to order_path(order)
+    assert_equal 0, order.reload.service_fee_percent
+  end
 end
