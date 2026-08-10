@@ -19,6 +19,9 @@ gem "tailwindcss-rails"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
 
+# Pagination for index pages [https://github.com/ddnexus/pagy]
+gem "pagy", "~> 9.4"
+
 # Traduções padrão do Rails/ActiveRecord (mensagens de validação, datas, números)
 gem "rails-i18n"
 

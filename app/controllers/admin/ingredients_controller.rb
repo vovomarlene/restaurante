@@ -2,7 +2,7 @@ class Admin::IngredientsController < Admin::BaseController
   before_action :set_ingredient, only: %i[ edit update destroy ]
 
   def index
-    @ingredients = Ingredient.order(:name)
+    @pagy, @ingredients = pagy(Ingredient.order(:name))
   end
 
   def new

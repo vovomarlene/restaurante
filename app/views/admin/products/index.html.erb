@@ -19,7 +19,7 @@
     </thead>
     <tbody class="divide-y divide-gray-100">
       <% @products.each do |product| %>
-        <tr>
+        <tr class="hover:bg-surface-muted transition-colors">
           <td class="px-4 py-2"><%= product.name %></td>
           <td class="px-4 py-2"><%= product.category.name %></td>
           <td class="px-4 py-2"><%= number_to_currency(product.price, unit: "R$", separator: ",", delimiter: ".") %></td>
@@ -33,4 +33,5 @@
       <% end %>
     </tbody>
   </table>
+  <%= render "shared/pagination", pagy: @pagy %>
 </div>

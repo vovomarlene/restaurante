@@ -2,7 +2,7 @@ class Admin::StockMovementsController < Admin::BaseController
   before_action :set_ingredient
 
   def index
-    @stock_movements = @ingredient.stock_movements.order(created_at: :desc)
+    @pagy, @stock_movements = pagy(@ingredient.stock_movements.order(created_at: :desc))
   end
 
   def new

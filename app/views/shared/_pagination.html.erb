@@ -1,0 +1,33 @@
+<% if pagy.count.positive? %>
+  <div class="flex items-center justify-between gap-4 px-4 py-3 border-t border-gray-200 flex-wrap">
+    <p class="text-sm text-ink-muted">
+      Mostrando <span class="font-medium text-ink"><%= pagy.from %>–<%= pagy.to %></span> de <span class="font-medium text-ink"><%= pagy.count %></span>
+    </p>
+
+    <% if pagy.pages > 1 %>
+      <nav class="flex items-center gap-1" aria-label="Paginação">
+        <% if pagy.prev %>
+          <%= link_to "Anterior", pagy_url_for(pagy, pagy.prev), class: "px-2.5 py-1.5 rounded-md text-sm font-medium border border-gray-300 hover:bg-surface-muted" %>
+        <% else %>
+          <span class="px-2.5 py-1.5 rounded-md text-sm font-medium text-ink-muted/50 cursor-not-allowed">Anterior</span>
+        <% end %>
+
+        <% pagy.series.each do |item| %>
+          <% if item.is_a?(Integer) %>
+            <%= link_to item, pagy_url_for(pagy, item), class: "px-3 py-1.5 rounded-md text-sm font-medium border border-gray-300 hover:bg-surface-muted" %>
+          <% elsif item.is_a?(String) %>
+            <span class="px-3 py-1.5 rounded-md text-sm font-medium bg-primary-600 text-white"><%= item %></span>
+          <% else %>
+            <span class="px-2 py-1.5 text-sm text-ink-muted">…</span>
+          <% end %>
+        <% end %>
+
+        <% if pagy.next %>
+          <%= link_to "Próxima", pagy_url_for(pagy, pagy.next), class: "px-2.5 py-1.5 rounded-md text-sm font-medium border border-gray-300 hover:bg-surface-muted" %>
+        <% else %>
+          <span class="px-2.5 py-1.5 rounded-md text-sm font-medium text-ink-muted/50 cursor-not-allowed">Próxima</span>
+        <% end %>
+      </nav>
+    <% end %>
+  </div>
+<% end %>

@@ -2,7 +2,7 @@ class Admin::DiningTablesController < Admin::BaseController
   before_action :set_dining_table, only: %i[ edit update destroy ]
 
   def index
-    @dining_tables = DiningTable.all
+    @pagy, @dining_tables = pagy(DiningTable.all)
   end
 
   def new

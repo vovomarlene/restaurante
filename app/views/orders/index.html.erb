@@ -32,7 +32,7 @@
         <tr><td class="px-4 py-4 text-ink-muted" colspan="6">Nenhuma venda neste dia.</td></tr>
       <% end %>
       <% @orders.each do |order| %>
-        <tr>
+        <tr class="hover:bg-surface-muted transition-colors">
           <td class="px-4 py-2"><%= l(order.opened_at, format: :short) %></td>
           <td class="px-4 py-2"><%= t("enums.order.order_type.#{order.order_type}") %></td>
           <td class="px-4 py-2">
@@ -66,4 +66,5 @@
       <% end %>
     </tbody>
   </table>
+  <%= render "shared/pagination", pagy: @pagy %>
 </div>

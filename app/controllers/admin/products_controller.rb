@@ -2,7 +2,7 @@ class Admin::ProductsController < Admin::BaseController
   before_action :set_product, only: %i[ edit update destroy ]
 
   def index
-    @products = Product.includes(:category).order(:name)
+    @pagy, @products = pagy(Product.includes(:category).order(:name))
   end
 
   def new

@@ -27,7 +27,7 @@
         <tr><td class="px-4 py-4 text-ink-muted" colspan="4">Nenhum cliente encontrado.</td></tr>
       <% end %>
       <% @customers.each do |customer| %>
-        <tr>
+        <tr class="hover:bg-surface-muted transition-colors">
           <td class="px-4 py-2"><%= link_to customer.name, customer_path(customer), class: "text-primary-700 hover:underline" %></td>
           <td class="px-4 py-2"><%= customer.phone %></td>
           <td class="px-4 py-2 <%= "text-danger font-medium" if customer.fiado_balance.positive? %>">
@@ -40,4 +40,5 @@
       <% end %>
     </tbody>
   </table>
+  <%= render "shared/pagination", pagy: @pagy %>
 </div>

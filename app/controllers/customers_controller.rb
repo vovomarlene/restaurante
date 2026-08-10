@@ -2,8 +2,9 @@ class CustomersController < ApplicationController
   before_action :set_customer, only: [ :show, :edit, :update, :destroy ]
 
   def index
-    @customers = Customer.active
-    @customers = @customers.select { |customer| customer.fiado_balance.positive? } if params[:fiado].present?
+    customers = Customer.active.to_a
+    customers = customers.select { |customer| customer.fiado_balance.positive? } if params[:fiado].present?
+    @pagy, @customers = pagy_array(customers)
   end
 
   def show

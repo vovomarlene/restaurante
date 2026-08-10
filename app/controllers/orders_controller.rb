@@ -8,6 +8,7 @@ class OrdersController < ApplicationController
 
     @orders = Order.where(opened_at: range).order(opened_at: :desc)
     @orders = @orders.where(status: params[:status]) if params[:status].present?
+    @pagy, @orders = pagy(@orders)
   rescue Date::Error
     redirect_to orders_path, alert: "Data inválida."
   end

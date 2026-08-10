@@ -24,7 +24,7 @@
     </thead>
     <tbody class="divide-y divide-gray-100">
       <% @stock_movements.each do |movement| %>
-        <tr>
+        <tr class="hover:bg-surface-muted transition-colors">
           <td class="px-4 py-2"><%= l(movement.created_at, format: :short) %></td>
           <td class="px-4 py-2"><%= t("enums.stock_movement.origin.#{movement.origin}") %></td>
           <td class="px-4 py-2 <%= movement.quantity.negative? ? "text-danger" : "text-success" %>">
@@ -36,4 +36,5 @@
       <% end %>
     </tbody>
   </table>
+  <%= render "shared/pagination", pagy: @pagy %>
 </div>

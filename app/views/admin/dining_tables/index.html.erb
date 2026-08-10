@@ -18,7 +18,7 @@
     </thead>
     <tbody class="divide-y divide-gray-100">
       <% @dining_tables.each do |table| %>
-        <tr>
+        <tr class="hover:bg-surface-muted transition-colors">
           <td class="px-4 py-2">Mesa <%= table.number %></td>
           <td class="px-4 py-2"><%= table.capacity %></td>
           <td class="px-4 py-2">
@@ -35,4 +35,5 @@
       <% end %>
     </tbody>
   </table>
+  <%= render "shared/pagination", pagy: @pagy %>
 </div>
