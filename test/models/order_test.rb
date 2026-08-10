@@ -81,20 +81,28 @@ class OrderTest < ActiveSupport::TestCase
   end
 
   test "refund! reverses stock, creates a Refund per payment, and cancels the order" do
-    order = orders(:balcao_fechada)
     ingredient = ingredients(:feijao)
     stock_before = ingredient.current_stock
+
+    # monta a venda por código de verdade (não fixture) pra disparar a baixa
+    # de estoque automática, e assim poder conferir o estorno dela depois
+    order = Order.create!(order_type: :balcao, opened_by: users(:two))
+    order.order_items.create!(product: products(:feijoada), quantity: 1)
+    order.payments.create!(cash_session: cash_sessions(:aberta), method: :dinheiro, amount: order.total, recorded_by: users(:two))
+    assert order.close!(closed_by: users(:two))
+    assert_equal stock_before - 0.3, ingredient.reload.current_stock
+    total_paid = order.total
 
     assert order.refund!(reason: "Cliente reclamou", recorded_by: users(:two))
 
     order.reload
     assert order.cancelado?
     assert order.order_items.active.none?
-    assert_equal stock_before + 0.3, ingredient.reload.current_stock
+    assert_equal stock_before, ingredient.reload.current_stock
 
-    refund = Refund.find_by(payment: payments(:balcao_fechada_pagamento))
+    refund = Refund.find_by(payment: order.payments.first)
     assert refund.present?
-    assert_equal 32.00, refund.amount
+    assert_equal total_paid, refund.amount
     assert_equal "Cliente reclamou", refund.reason
   end
 
