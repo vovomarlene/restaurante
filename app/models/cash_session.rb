@@ -9,7 +9,7 @@ class CashSession < ApplicationRecord
   has_many :fiado_settlements, dependent: :restrict_with_error
   has_many :refunds, dependent: :restrict_with_error
 
-  validates :opening_amount, numericality: { greater_than_or_equal_to: 0 }
+  validates :opening_amount, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
   before_validation :set_opened_at, on: :create
 

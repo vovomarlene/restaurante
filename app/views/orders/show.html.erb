@@ -22,7 +22,7 @@
   <%= link_to "Voltar para mesas", tables_path, class: "text-primary-700 hover:underline text-sm" %>
 </div>
 
-<div class="grid md:grid-cols-2 gap-6">
+<div class="grid md:grid-cols-2 gap-6 items-start">
   <% if @order.aberto? %>
     <%= render "product_picker", categories: @categories, order: @order %>
   <% else %>
@@ -34,5 +34,7 @@
     </div>
   <% end %>
 
-  <%= render "cart", order: @order %>
+  <div class="md:sticky md:top-6">
+    <%= render "cart", order: @order %>
+  </div>
 </div>

@@ -11,8 +11,10 @@
     <% end %>
 
     <div>
-      <%= form.label :opening_amount, "Fundo de troco inicial (R$)", class: "block text-sm font-medium text-ink-muted mb-1" %>
-      <%= form.number_field :opening_amount, step: "0.01", value: @cash_session.opening_amount || 0, class: "block shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-2 w-full" %>
+      <%= form.label :opening_amount, "Fundo de troco inicial em dinheiro (R$)", class: "block text-sm font-medium text-ink-muted mb-1" %>
+      <%= form.number_field :opening_amount, step: "0.01", min: 0, required: true, placeholder: "0,00",
+            class: "block shadow-sm rounded-md border border-gray-300 focus:outline-primary-600 px-3 py-2 w-full" %>
+      <p class="text-xs text-ink-muted mt-1">Quanto tem em dinheiro na gaveta ao abrir o caixa. Pode ser 0.</p>
     </div>
 
     <div>

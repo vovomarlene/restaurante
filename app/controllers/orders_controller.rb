@@ -3,7 +3,7 @@ class OrdersController < ApplicationController
   before_action :require_open_order, only: [ :kitchen_ticket, :kitchen_ticket_confirm ]
 
   def index
-    @date = params[:date].present? ? Date.parse(params[:date]) : Date.current
+    @date = params[:date].present? ? Date.strptime(params[:date], "%d/%m/%Y") : Date.current
     range = @date.beginning_of_day..@date.end_of_day
 
     @orders = Order.where(opened_at: range).order(opened_at: :desc)

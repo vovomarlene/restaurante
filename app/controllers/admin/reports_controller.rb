@@ -2,7 +2,7 @@ class Admin::ReportsController < Admin::BaseController
   PERIODS = %w[diario semanal mensal].freeze
 
   def index
-    @date = params[:date].present? ? Date.parse(params[:date]) : Date.current
+    @date = params[:date].present? ? Date.strptime(params[:date], "%d/%m/%Y") : Date.current
     @period = PERIODS.include?(params[:period]) ? params[:period] : "diario"
     range = period_range(@date, @period)
 

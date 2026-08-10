@@ -16,24 +16,27 @@
   <% items = order.order_items.active.includes(:product).order(:created_at) %>
 
   <% if items.empty? %>
-    <p class="text-ink-muted text-sm">Nenhum item lançado ainda.</p>
+    <p class="text-ink-muted text-sm py-2">Nenhum item lançado ainda.</p>
   <% else %>
     <ul class="divide-y divide-gray-100 mb-4">
       <% items.each do |item| %>
-        <li class="py-2 flex items-center justify-between gap-2 text-sm">
+        <li class="py-2.5 flex items-center justify-between gap-2 text-sm">
           <div>
             <span class="font-medium"><%= item.quantity %>x <%= item.product.name %></span>
-            <span class="text-ink-muted"><%= number_to_currency(item.total_price, unit: "R$", separator: ",", delimiter: ".") %></span>
+            <span class="block text-ink-muted text-xs mt-0.5"><%= number_to_currency(item.total_price, unit: "R$", separator: ",", delimiter: ".") %></span>
           </div>
           <% if order.aberto? %>
-            <%= button_to "Remover", order_order_item_path(order, item), method: :delete, class: "text-danger hover:underline bg-transparent border-0 p-0 cursor-pointer font-normal text-xs" %>
+            <%= button_to order_order_item_path(order, item), method: :delete,
+                  class: "text-danger hover:bg-red-50 rounded-md p-1.5 bg-transparent border-0 cursor-pointer", title: "Remover" do %>
+              <%= icon :trash, css_class: "size-4" %>
+            <% end %>
           <% end %>
         </li>
       <% end %>
     </ul>
   <% end %>
 
-  <div class="border-t border-gray-200 pt-3 space-y-1 text-sm">
+  <div class="border-t border-gray-200 pt-3 space-y-1.5 text-sm">
     <div class="flex justify-between">
       <span class="text-ink-muted">Subtotal</span>
       <span><%= number_to_currency(order.subtotal, unit: "R$", separator: ",", delimiter: ".") %></span>
@@ -41,11 +44,11 @@
 
     <% if order.mesa? %>
       <div class="flex justify-between items-center gap-2">
-        <span class="text-ink-muted">
+        <span class="text-ink-muted flex items-center gap-1.5">
           Taxa de serviço<% if order.service_fee_percent.to_f.positive? %> (<%= order.service_fee_percent.to_i %>%)<% end %>
           <% if order.aberto? %>
             <%= button_to (order.service_fee_percent.to_f.positive? ? "desativar" : "reativar"), toggle_service_fee_order_path(order), method: :patch,
-                  class: "text-primary-700 hover:underline bg-transparent border-0 p-0 cursor-pointer font-normal text-xs align-middle" %>
+                  class: "text-primary-700 hover:bg-primary-50 rounded px-1.5 py-0.5 bg-transparent border-0 cursor-pointer font-medium text-xs" %>
           <% end %>
         </span>
         <span><%= number_to_currency(order.service_fee_amount, unit: "R$", separator: ",", delimiter: ".") %></span>
@@ -59,9 +62,9 @@
       </div>
     <% end %>
 
-    <div class="flex justify-between font-bold text-base pt-1">
-      <span>Total</span>
-      <span><%= number_to_currency(order.total, unit: "R$", separator: ",", delimiter: ".") %></span>
+    <div class="flex justify-between items-baseline font-bold pt-2 mt-1 border-t border-gray-200">
+      <span class="text-base">Total</span>
+      <span class="text-xl text-primary-700"><%= number_to_currency(order.total, unit: "R$", separator: ",", delimiter: ".") %></span>
     </div>
   </div>
 

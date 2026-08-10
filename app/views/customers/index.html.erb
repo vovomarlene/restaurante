@@ -8,7 +8,9 @@
     <% else %>
       <%= link_to "Mostrar só com fiado em aberto", customers_path(fiado: 1), class: "rounded-md px-3.5 py-2 border border-gray-300 hover:bg-surface-muted font-medium" %>
     <% end %>
-    <%= link_to "Novo cliente", new_customer_path, class: "rounded-md px-3.5 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium" %>
+    <%= link_to new_customer_path, class: "inline-flex items-center gap-1.5 rounded-md px-3.5 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium" do %>
+      <%= icon :plus, css_class: "size-4" %> Novo cliente
+    <% end %>
   </div>
 </div>
 
@@ -16,25 +18,25 @@
   <table class="w-full text-left text-sm">
     <thead class="bg-surface-muted text-ink-muted">
       <tr>
-        <th class="px-4 py-2">Nome</th>
-        <th class="px-4 py-2">Telefone</th>
-        <th class="px-4 py-2">Saldo fiado</th>
-        <th class="px-4 py-2"></th>
+        <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wide">Nome</th>
+        <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wide">Telefone</th>
+        <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wide">Saldo fiado</th>
+        <th class="px-4 py-3"></th>
       </tr>
     </thead>
     <tbody class="divide-y divide-gray-100">
       <% if @customers.empty? %>
-        <tr><td class="px-4 py-4 text-ink-muted" colspan="4">Nenhum cliente encontrado.</td></tr>
+        <tr><td class="px-4 py-6 text-center text-ink-muted" colspan="4">Nenhum cliente encontrado.</td></tr>
       <% end %>
       <% @customers.each do |customer| %>
         <tr class="hover:bg-surface-muted transition-colors">
-          <td class="px-4 py-2"><%= link_to customer.name, customer_path(customer), class: "text-primary-700 hover:underline" %></td>
-          <td class="px-4 py-2"><%= customer.phone %></td>
-          <td class="px-4 py-2 <%= "text-danger font-medium" if customer.fiado_balance.positive? %>">
+          <td class="px-4 py-3"><%= link_to customer.name, customer_path(customer), class: "font-medium text-primary-700 hover:underline" %></td>
+          <td class="px-4 py-3 text-ink-muted"><%= customer.phone %></td>
+          <td class="px-4 py-3 <%= "text-danger font-medium" if customer.fiado_balance.positive? %>">
             <%= number_to_currency(customer.fiado_balance, unit: "R$ ", separator: ",", delimiter: ".") %>
           </td>
-          <td class="px-4 py-2 text-right">
-            <%= link_to edit_customer_path(customer), class: "inline-flex items-center gap-1 text-primary-700 hover:underline" do %>
+          <td class="px-4 py-3 text-right">
+            <%= link_to edit_customer_path(customer), class: "inline-flex items-center gap-1 text-primary-700 hover:bg-primary-50 rounded-md px-2 py-1" do %>
               <%= icon :edit, css_class: "size-4" %> Editar
             <% end %>
           </td>

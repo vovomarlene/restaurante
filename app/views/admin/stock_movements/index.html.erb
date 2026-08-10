@@ -6,7 +6,9 @@
     <p class="text-ink-muted text-sm">Estoque atual: <%= @ingredient.current_stock %> <%= @ingredient.unit %></p>
   </div>
   <div class="flex gap-3">
-    <%= link_to "Novo movimento", new_admin_ingredient_stock_movement_path(@ingredient), class: "rounded-md px-3.5 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium" %>
+    <%= link_to new_admin_ingredient_stock_movement_path(@ingredient), class: "inline-flex items-center gap-1.5 rounded-md px-3.5 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium" do %>
+      <%= icon :plus, css_class: "size-4" %> Novo movimento
+    <% end %>
     <%= link_to "Voltar para insumos", admin_ingredients_path, class: "rounded-md px-3.5 py-2 border border-gray-300 hover:bg-surface-muted font-medium" %>
   </div>
 </div>
@@ -15,23 +17,26 @@
   <table class="w-full text-left text-sm">
     <thead class="bg-surface-muted text-ink-muted">
       <tr>
-        <th class="px-4 py-2">Data</th>
-        <th class="px-4 py-2">Origem</th>
-        <th class="px-4 py-2">Quantidade</th>
-        <th class="px-4 py-2">Saldo após</th>
-        <th class="px-4 py-2">Motivo</th>
+        <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wide">Data</th>
+        <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wide">Origem</th>
+        <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wide">Quantidade</th>
+        <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wide">Saldo após</th>
+        <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wide">Motivo</th>
       </tr>
     </thead>
     <tbody class="divide-y divide-gray-100">
+      <% if @stock_movements.empty? %>
+        <tr><td class="px-4 py-6 text-center text-ink-muted" colspan="5">Nenhuma movimentação registrada.</td></tr>
+      <% end %>
       <% @stock_movements.each do |movement| %>
         <tr class="hover:bg-surface-muted transition-colors">
-          <td class="px-4 py-2"><%= l(movement.created_at, format: :short) %></td>
-          <td class="px-4 py-2"><%= t("enums.stock_movement.origin.#{movement.origin}") %></td>
-          <td class="px-4 py-2 <%= movement.quantity.negative? ? "text-danger" : "text-success" %>">
+          <td class="px-4 py-3"><%= l(movement.created_at, format: :short) %></td>
+          <td class="px-4 py-3"><%= t("enums.stock_movement.origin.#{movement.origin}") %></td>
+          <td class="px-4 py-3 font-medium <%= movement.quantity.negative? ? "text-danger" : "text-success" %>">
             <%= movement.quantity.positive? ? "+" : "" %><%= movement.quantity %>
           </td>
-          <td class="px-4 py-2"><%= movement.balance_after %></td>
-          <td class="px-4 py-2 text-ink-muted"><%= movement.reason %></td>
+          <td class="px-4 py-3"><%= movement.balance_after %></td>
+          <td class="px-4 py-3 text-ink-muted"><%= movement.reason %></td>
         </tr>
       <% end %>
     </tbody>
