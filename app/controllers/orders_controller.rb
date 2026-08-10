@@ -57,28 +57,29 @@ class OrdersController < ApplicationController
     head :no_content
   end
 
-  # GET mostra a confirmação (com motivo, se a comanda já estiver fechada);
+  # GET mostra a confirmação (com motivo, se a comanda exigir estorno);
   # POST executa. Comanda aberta sem pagamento: cancel! (qualquer usuário).
-  # Comanda fechada/paga: refund! (só admin, motivo obrigatório).
+  # Comanda fechada, ou aberta com pagamento parcial já registrado: refund!
+  # (só admin, motivo obrigatório) — ver Order#requires_refund?.
   def cancel
-    if @order.fechado? && !current_user_admin?
-      redirect_to orders_path, alert: "Só administradores podem estornar uma venda já paga."
+    if @order.requires_refund? && !current_user_admin?
+      redirect_to orders_path, alert: "Só administradores podem estornar uma venda com pagamento já registrado."
       return
     end
 
     return unless request.post?
 
-    if @order.aberto?
-      if @order.cancel!
-        redirect_to orders_path, notice: "Comanda cancelada."
-      else
-        redirect_to orders_path, alert: @order.errors.full_messages.to_sentence
-      end
-    elsif @order.fechado?
+    if @order.requires_refund?
       if @order.refund!(reason: params[:reason], recorded_by: Current.user)
         redirect_to orders_path, notice: "Venda estornada."
       else
         redirect_to cancel_order_path(@order), alert: @order.errors.full_messages.to_sentence
+      end
+    elsif @order.aberto?
+      if @order.cancel!
+        redirect_to orders_path, notice: "Comanda cancelada."
+      else
+        redirect_to orders_path, alert: @order.errors.full_messages.to_sentence
       end
     else
       redirect_to orders_path, alert: "Esta comanda já está cancelada."

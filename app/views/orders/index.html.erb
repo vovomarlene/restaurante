@@ -57,8 +57,16 @@
               <%= link_to order_path(order), class: "inline-flex items-center gap-1 text-primary-700 hover:bg-primary-50 rounded-md px-2 py-1" do %>
                 <%= icon :eye, css_class: "size-4" %> Ver comanda
               <% end %>
-              <%= link_to cancel_order_path(order), class: "inline-flex items-center gap-1 text-danger hover:bg-red-50 rounded-md px-2 py-1" do %>
-                <%= icon :trash, css_class: "size-4" %> Cancelar
+              <% if order.requires_refund? %>
+                <% if current_user_admin? %>
+                  <%= link_to cancel_order_path(order), class: "inline-flex items-center gap-1 text-danger hover:bg-red-50 rounded-md px-2 py-1" do %>
+                    <%= icon :trash, css_class: "size-4" %> Estornar
+                  <% end %>
+                <% end %>
+              <% else %>
+                <%= link_to cancel_order_path(order), class: "inline-flex items-center gap-1 text-danger hover:bg-red-50 rounded-md px-2 py-1" do %>
+                  <%= icon :trash, css_class: "size-4" %> Cancelar
+                <% end %>
               <% end %>
             <% elsif order.fechado? %>
               <%= link_to receipt_order_path(order), class: "inline-flex items-center gap-1 text-primary-700 hover:bg-primary-50 rounded-md px-2 py-1" do %>

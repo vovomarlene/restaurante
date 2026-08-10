@@ -122,11 +122,34 @@ class OrderTest < ActiveSupport::TestCase
     assert_equal "Cliente reclamou", refund.reason
   end
 
-  test "refund! requires the order to be fechado" do
+  test "refund! requires the order to be fechado, or aberto with a payment already on record" do
     order = orders(:mesa_aberta)
 
+    assert_not order.requires_refund?
     assert_not order.refund!(reason: "teste", recorded_by: users(:two))
     assert order.errors[:base].present?
+  end
+
+  # Cenário real de bug: pagamento parcial numa comanda de mesa, depois os
+  # itens são removidos (ex: pedido cancelado no balcão) — a comanda fica
+  # "presa" aberta com R$0,00 de total mas um pagamento já registrado.
+  # cancel! recusa (tem pagamento) e refund! recusava (não estava fechada) —
+  # não tinha como resolver. refund! agora aceita esse caso.
+  test "refund! resolves an aberto order stuck with a payment after its items were removed" do
+    order = orders(:mesa_aberta)
+    item = order_items(:mesa_aberta_refrigerante)
+    order.payments.create!(cash_session: cash_sessions(:aberta), method: :dinheiro, amount: 5, recorded_by: users(:two))
+    item.cancel!
+
+    assert order.aberto?
+    assert order.requires_refund?
+
+    assert order.refund!(reason: "Comanda travada", recorded_by: users(:two))
+
+    order.reload
+    assert order.cancelado?
+    refund = Refund.find_by(payment: order.payments.first)
+    assert_equal 5, refund.amount
   end
 
   test "refund! requires a reason" do

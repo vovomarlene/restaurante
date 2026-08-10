@@ -1,7 +1,7 @@
 <% content_for :title, "Cancelar comanda ##{@order.id}" %>
 
 <h1 class="font-bold text-2xl mb-6">
-  <%= @order.fechado? ? "Estornar venda" : "Cancelar comanda" %> #<%= @order.id %>
+  <%= @order.requires_refund? ? "Estornar venda" : "Cancelar comanda" %> #<%= @order.id %>
 </h1>
 
 <div class="bg-surface rounded-xl shadow-sm border border-gray-200 p-6 max-w-md">
@@ -11,21 +11,27 @@
     </div>
   <% end %>
 
-  <p class="text-sm text-ink-muted mb-4">
+  <p class="text-sm text-ink-muted mb-1">
     Total: <%= number_to_currency(@order.total, unit: "R$ ", separator: ",", delimiter: ".") %>
   </p>
+  <% if @order.requires_refund? %>
+    <p class="text-sm text-ink-muted mb-4">
+      Já pago: <%= number_to_currency(@order.amount_paid, unit: "R$ ", separator: ",", delimiter: ".") %>
+    </p>
+  <% end %>
 
-  <% if @order.fechado? %>
+  <% if @order.requires_refund? %>
     <p class="text-sm mb-4">
-      Esta venda já foi paga. Estornar vai devolver o estoque dos itens e descontar o valor do caixa
-      (se o pagamento tiver sido em dinheiro). Essa ação não pode ser desfeita.
+      Esta comanda já recebeu pagamento<%= " mesmo estando aberta" if @order.aberto? %>. Estornar vai devolver o
+      estoque dos itens ativos e descontar o valor do caixa (se o pagamento tiver sido em dinheiro). Essa ação não
+      pode ser desfeita.
     </p>
   <% else %>
     <p class="text-sm mb-4">Esta comanda ainda não recebeu pagamento. Cancelar vai devolver o estoque dos itens.</p>
   <% end %>
 
   <%= form_with url: cancel_order_path(@order), method: :post, class: "space-y-4" do |form| %>
-    <% if @order.fechado? %>
+    <% if @order.requires_refund? %>
       <div>
         <%= form.label :reason, "Motivo do estorno", class: "block text-sm font-medium text-ink-muted mb-1" %>
         <%= form.text_area :reason, name: "reason", rows: 2, required: true,
@@ -34,7 +40,7 @@
     <% end %>
 
     <div class="flex gap-3">
-      <%= form.submit @order.fechado? ? "Estornar venda" : "Cancelar comanda",
+      <%= form.submit @order.requires_refund? ? "Estornar venda" : "Cancelar comanda",
             class: "rounded-md px-3.5 py-2 bg-danger hover:opacity-90 text-white font-medium cursor-pointer" %>
       <%= link_to "Voltar", orders_path, class: "rounded-md px-3.5 py-2 border border-gray-300 hover:bg-surface-muted" %>
     </div>

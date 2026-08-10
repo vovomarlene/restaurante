@@ -77,6 +77,13 @@ class Order < ApplicationRecord
     true
   end
 
+  # Comanda aberta que já recebeu algum pagamento (parcial, sem ter fechado)
+  # não pode ser cancelada de graça — precisa passar por refund! pra estornar
+  # o que já foi pago.
+  def requires_refund?
+    fechado? || (aberto? && payments.exists?)
+  end
+
   def cancel!
     with_lock do
       unless aberto?
@@ -85,7 +92,7 @@ class Order < ApplicationRecord
       end
 
       if payments.exists?
-        errors.add(:base, "Não é possível cancelar uma comanda que já recebeu pagamento.")
+        errors.add(:base, "Esta comanda já recebeu pagamento — use estornar em vez de cancelar.")
         return false
       end
 
@@ -105,14 +112,17 @@ class Order < ApplicationRecord
     true
   end
 
-  # Cancela uma comanda já fechada/paga: estorna cada pagamento (nunca edita
-  # o Payment original, só compensa com um Refund — mesmo princípio do
-  # StockMovement), devolve o estoque e libera a mesa. Exige caixa aberto
-  # porque um estorno em dinheiro precisa sair do caixa físico agora.
+  # Estorna uma comanda que já recebeu pagamento — fechada/paga, ou aberta
+  # com pagamento parcial (ex: pagou uma parte e depois os itens foram
+  # removidos, deixando a comanda "presa" sem poder ser fechada nem
+  # cancelada). Estorna cada pagamento (nunca edita o Payment original, só
+  # compensa com um Refund — mesmo princípio do StockMovement), devolve o
+  # estoque e libera a mesa. Exige caixa aberto porque um estorno em
+  # dinheiro precisa sair do caixa físico agora.
   def refund!(reason:, recorded_by:)
     with_lock do
-      unless fechado?
-        errors.add(:base, "Só é possível estornar uma comanda fechada.")
+      unless requires_refund?
+        errors.add(:base, "Só é possível estornar uma comanda que já recebeu pagamento.")
         return false
       end
 

@@ -91,4 +91,26 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to order_path(order)
     assert_equal 0, order.reload.service_fee_percent
   end
+
+  test "cancel blocks non-admins from an aberto order stuck with a payment" do
+    order = orders(:mesa_aberta)
+    order.payments.create!(cash_session: cash_sessions(:aberta), method: :dinheiro, amount: 5, recorded_by: users(:two))
+
+    sign_in_as(users(:one))
+    get cancel_order_path(order)
+
+    assert_redirected_to orders_path
+    assert order.reload.aberto?
+  end
+
+  test "cancel (POST) as admin refunds an aberto order stuck with a payment" do
+    order = orders(:mesa_aberta)
+    order.payments.create!(cash_session: cash_sessions(:aberta), method: :dinheiro, amount: 5, recorded_by: users(:two))
+    order_items(:mesa_aberta_refrigerante).cancel!
+
+    post cancel_order_path(order), params: { reason: "Comanda travada" }
+
+    assert_redirected_to orders_path
+    assert order.reload.cancelado?
+  end
 end
