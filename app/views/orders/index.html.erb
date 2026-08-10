@@ -32,7 +32,7 @@
         <tr><td class="px-4 py-4 text-ink-muted" colspan="6">Nenhuma venda neste dia.</td></tr>
       <% end %>
       <% @orders.each do |order| %>
-        <tr class="hover:bg-surface-muted transition-colors">
+        <tr class="hover:bg-surface-muted transition-colors <%= "opacity-60" if order.cancelado? %>">
           <td class="px-4 py-2"><%= l(order.opened_at, format: :short) %></td>
           <td class="px-4 py-2"><%= t("enums.order.order_type.#{order.order_type}") %></td>
           <td class="px-4 py-2">
@@ -44,7 +44,7 @@
               —
             <% end %>
           </td>
-          <td class="px-4 py-2"><%= number_to_currency(order.total, unit: "R$ ", separator: ",", delimiter: ".") %></td>
+          <td class="px-4 py-2"><%= number_to_currency(order.cancelado? ? order.total_before_cancellation : order.total, unit: "R$ ", separator: ",", delimiter: ".") %></td>
           <td class="px-4 py-2">
             <% badge_class = { "aberto" => "bg-blue-100 text-blue-800", "fechado" => "bg-green-100 text-green-800", "cancelado" => "bg-red-100 text-red-800" }[order.status] %>
             <span class="px-2 py-0.5 rounded-full text-xs font-medium <%= badge_class %>">

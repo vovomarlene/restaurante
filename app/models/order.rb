@@ -39,6 +39,16 @@ class Order < ApplicationRecord
     subtotal + service_fee_amount + delivery_fee
   end
 
+  # cancel!/refund! cancelam os order_items (pra tirar do estoque/subtotal
+  # corretamente), então `total` de uma comanda cancelada sempre dá zero.
+  # Pra exibir o valor que a venda tinha antes de ser cancelada/estornada,
+  # recalcula ignorando o status dos itens.
+  def total_before_cancellation
+    gross_subtotal = order_items.sum("quantity * unit_price")
+    gross_service_fee = mesa? ? (gross_subtotal * service_fee_percent / 100).round(2) : 0
+    gross_subtotal + gross_service_fee + delivery_fee
+  end
+
   def amount_paid
     payments.sum(:amount)
   end
@@ -80,9 +90,17 @@ class Order < ApplicationRecord
         return false
       end
 
-      order_items.active.each(&:cancel!)
-      update!(status: :cancelado, closed_at: Time.current)
       free_table
+
+      # Comanda aberta por engano e cancelada sem nenhum item lançado não
+      # tem valor de histórico — remove de vez em vez de virar lixo
+      # "Cancelada — R$ 0,00" na tela de Vendas.
+      if order_items.none?
+        destroy!
+      else
+        order_items.active.each(&:cancel!)
+        update!(status: :cancelado, closed_at: Time.current)
+      end
     end
 
     true

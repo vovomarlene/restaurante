@@ -48,6 +48,22 @@ class OrderTest < ActiveSupport::TestCase
     assert order.errors[:base].present?
   end
 
+  test "cancel! destroys an order that never had any items, instead of leaving a cancelado shell" do
+    order = Order.create!(order_type: :balcao, opened_by: users(:one))
+
+    assert order.cancel!
+    assert_not Order.exists?(order.id)
+  end
+
+  test "total_before_cancellation still shows what a cancelled order was worth" do
+    order = orders(:mesa_aberta)
+
+    order.cancel!
+
+    assert_equal 0, order.total
+    assert_equal 13.20, order.total_before_cancellation
+  end
+
   test "a new delivery order starts pendente and advances one stage at a time" do
     order = Order.create!(
       order_type: :delivery, opened_by: users(:one),
