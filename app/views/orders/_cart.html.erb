@@ -66,8 +66,14 @@
   </div>
 
   <% if order.aberto? && items.any? %>
-    <%= link_to "Ir para pagamento", new_order_payment_path(order),
-          class: "mt-4 block text-center rounded-md px-3.5 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium" %>
+    <% if CashSession.current %>
+      <%= link_to "Ir para pagamento", new_order_payment_path(order),
+            class: "mt-4 block text-center rounded-md px-3.5 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium" %>
+    <% else %>
+      <p class="mt-4 text-center text-sm text-danger">
+        Abra o <%= link_to "caixa", new_cash_session_path, class: "underline font-medium" %> para receber o pagamento.
+      </p>
+    <% end %>
   <% end %>
 
   <% if order.aberto? && order.order_items.active.pending_kitchen.exists? %>

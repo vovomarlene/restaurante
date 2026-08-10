@@ -1,5 +1,6 @@
 class PaymentsController < ApplicationController
   before_action :set_order
+  before_action :require_open_cash_session
 
   def new
     # Construído sem passar pela associação @order.payments — isso evita que
@@ -33,6 +34,12 @@ class PaymentsController < ApplicationController
 
   def set_order
     @order = Order.find(params[:order_id])
+  end
+
+  def require_open_cash_session
+    return if CashSession.current
+
+    redirect_to @order, alert: "É necessário abrir o caixa antes de registrar um pagamento."
   end
 
   def payment_params

@@ -112,6 +112,7 @@
         amount: "Valor"
         amount_received: "Valor recebido"
         customer: "Cliente"
+        cash_session: "Sessão de caixa"
       customer:
         name: "Nome"
         phone: "Telefone"
