@@ -39,6 +39,6 @@ class PdvFlowTest < ActionDispatch::IntegrationTest
       post orders_path, params: { order: { order_type: "balcao" } }
     end
 
-    assert_redirected_to tables_path
+    assert_redirected_to comandas_path
   end
 end

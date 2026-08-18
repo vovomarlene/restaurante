@@ -4,9 +4,9 @@
   </div>
 
   <nav class="flex-1 min-h-0 overflow-y-auto px-3 py-4 space-y-1 text-sm">
-    <%= link_to tables_path,
-          class: "flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-primary-800 hover:text-white #{current_page?(tables_path) ? "bg-primary-800 text-white" : "text-primary-100"}" do %>
-      <%= icon :tables %> Mesas
+    <%= link_to comandas_path,
+          class: "flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-primary-800 hover:text-white #{current_page?(comandas_path) ? "bg-primary-800 text-white" : "text-primary-100"}" do %>
+      <%= icon :tables %> Comandas
     <% end %>
     <%= link_to balcao_path,
           class: "flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-primary-800 hover:text-white #{current_page?(balcao_path) ? "bg-primary-800 text-white" : "text-primary-100"}" do %>
@@ -38,10 +38,6 @@
       <%= link_to admin_ingredients_path,
             class: "flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-primary-800 hover:text-white #{current_page?(admin_ingredients_path) ? "bg-primary-800 text-white" : "text-primary-100"}" do %>
         <%= icon :ingredient %> Insumos
-      <% end %>
-      <%= link_to admin_dining_tables_path,
-            class: "flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-primary-800 hover:text-white #{current_page?(admin_dining_tables_path) ? "bg-primary-800 text-white" : "text-primary-100"}" do %>
-        <%= icon :admin_tables %> Cadastro de mesas
       <% end %>
       <%= link_to admin_reports_path,
             class: "flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-primary-800 hover:text-white #{current_page?(admin_reports_path) ? "bg-primary-800 text-white" : "text-primary-100"}" do %>

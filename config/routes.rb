@@ -13,12 +13,12 @@ Rails.application.routes.draw do
     resource :setting, only: [ :edit, :update ]
   end
 
-  get "mesas", to: "tables#index", as: :tables
+  get "comandas", to: "comandas#index", as: :comandas
   get "balcao", to: "balcao#index", as: :balcao
 
   resources :orders, only: [ :create, :show, :index ] do
     resources :order_items, only: [ :create, :destroy ]
-    resources :payments, only: [ :new, :create ]
+    resources :payments, only: [ :new, :create, :edit, :update ]
     member do
       get :receipt
       get :kitchen_ticket

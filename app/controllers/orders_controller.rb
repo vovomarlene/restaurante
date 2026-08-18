@@ -21,10 +21,10 @@ class OrdersController < ApplicationController
     if @order.save
       redirect_to @order
     else
-      redirect_to tables_path, alert: @order.errors.full_messages.to_sentence
+      redirect_to comandas_path, alert: @order.errors.full_messages.to_sentence
     end
   rescue ActiveRecord::RecordNotUnique
-    redirect_to tables_path, alert: "Essa mesa acabou de ser aberta por outro operador."
+    redirect_to comandas_path, alert: "Essa mesa acabou de ser aberta por outro operador."
   end
 
   def show
@@ -123,7 +123,7 @@ class OrdersController < ApplicationController
 
   def order_subtitle(order)
     if order.mesa?
-      "Mesa #{order.dining_table.number}"
+      order.dining_table ? "Mesa #{order.dining_table.number}" : "Comanda ##{order.id}"
     elsif order.balcao?
       "Venda balcão ##{order.id}"
     else

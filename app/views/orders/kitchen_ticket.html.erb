@@ -8,7 +8,7 @@
     <h1 class="font-bold text-lg">Cozinha</h1>
     <p class="text-ink-muted text-sm">
       <% if @order.mesa? %>
-        Mesa <%= @order.dining_table.number %>
+        <%= @order.dining_table ? "Mesa #{@order.dining_table.number}" : "Comanda ##{@order.id}" %>
       <% elsif @order.balcao? %>
         Venda balcão #<%= @order.id %>
       <% else %>

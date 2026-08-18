@@ -12,7 +12,6 @@ class Order < ApplicationRecord
   has_many :order_items, dependent: :restrict_with_error
   has_many :payments, dependent: :restrict_with_error
 
-  validates :dining_table, presence: true, if: :mesa?
   validates :customer_name, :delivery_address, presence: true, if: :delivery?
   validate :table_not_already_open, on: :create, if: :mesa?
   validate :cash_session_must_be_open, on: :create
@@ -173,7 +172,7 @@ class Order < ApplicationRecord
   end
 
   def occupy_table
-    dining_table.update!(status: :ocupada)
+    dining_table&.update!(status: :ocupada)
   end
 
   def free_table

@@ -22,7 +22,7 @@ class OrderTest < ActiveSupport::TestCase
     assert other.errors[:dining_table].present?
   end
 
-  test "opening a mesa order occupies the table" do
+  test "opening a mesa order occupies the table, when a dining_table is given" do
     table = dining_tables(:mesa_dois)
     assert table.livre?
 
@@ -30,6 +30,16 @@ class OrderTest < ActiveSupport::TestCase
 
     assert table.reload.ocupada?
     assert_equal order, table.open_order
+  end
+
+  # Fluxo principal hoje em dia: comanda de mesa sem vincular a uma mesa
+  # cadastrada (ver ComandasController) — dining_table é só um vínculo
+  # opcional, mantido pra compatibilidade com comandas antigas.
+  test "opening a mesa order without a dining_table succeeds" do
+    order = Order.create!(order_type: :mesa, opened_by: users(:one))
+
+    assert order.persisted?
+    assert_nil order.dining_table
   end
 
   test "cancel! cancels all active items and frees the table" do

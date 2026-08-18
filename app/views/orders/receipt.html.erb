@@ -8,7 +8,7 @@
     <h1 class="font-bold text-lg"><%= t("app.name") %></h1>
     <p class="text-ink-muted text-sm">
       <% if @order.mesa? %>
-        Mesa <%= @order.dining_table.number %>
+        <%= @order.dining_table ? "Mesa #{@order.dining_table.number}" : "Comanda ##{@order.id}" %>
       <% elsif @order.balcao? %>
         Venda balcão #<%= @order.id %>
       <% else %>
@@ -64,7 +64,14 @@
               (troco <%= number_to_currency(payment.troco, unit: "R$", separator: ",", delimiter: ".") %>)
             <% end %>
           </span>
-          <span><%= number_to_currency(payment.amount, unit: "R$", separator: ",", delimiter: ".") %></span>
+          <span class="flex items-center gap-2">
+            <%= number_to_currency(payment.amount, unit: "R$", separator: ",", delimiter: ".") %>
+            <% if current_user_admin? %>
+              <%= link_to edit_order_payment_path(@order, payment), class: "no-print text-primary-700 hover:bg-primary-50 rounded-md p-1", title: "Corrigir forma de pagamento" do %>
+                <%= icon :edit, css_class: "size-3.5" %>
+              <% end %>
+            <% end %>
+          </span>
         </div>
       <% end %>
     </div>

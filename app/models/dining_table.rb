@@ -9,18 +9,7 @@ class DiningTable < ApplicationRecord
   scope :active, -> { where(active: true) }
   default_scope { order(:number) }
 
-  after_update_commit :broadcast_status, if: :saved_change_to_status?
-
   def open_order
     orders.open.first
-  end
-
-  private
-
-  def broadcast_status
-    broadcast_replace_to "mesas",
-      target: ActionView::RecordIdentifier.dom_id(self),
-      partial: "tables/table_card",
-      locals: { table: self }
   end
 end

@@ -38,7 +38,7 @@
           <td class="px-4 py-3"><%= t("enums.order.order_type.#{order.order_type}") %></td>
           <td class="px-4 py-3">
             <% if order.mesa? %>
-              Mesa <%= order.dining_table&.number %>
+              <%= order.dining_table ? "Mesa #{order.dining_table.number}" : "Comanda ##{order.id}" %>
             <% elsif order.delivery? %>
               <%= order.customer_name %>
             <% else %>

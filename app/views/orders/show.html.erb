@@ -7,7 +7,7 @@
   <div>
     <h1 class="font-bold text-2xl">
       <% if @order.mesa? %>
-        Mesa <%= @order.dining_table.number %>
+        <%= @order.dining_table ? "Mesa #{@order.dining_table.number}" : "Comanda ##{@order.id}" %>
       <% elsif @order.balcao? %>
         Venda balcão #<%= @order.id %>
       <% else %>
@@ -19,20 +19,23 @@
     </p>
   </div>
 
-  <%= link_to "Voltar para mesas", tables_path, class: "text-primary-700 hover:underline text-sm" %>
+  <% back_path = @order.mesa? ? comandas_path : @order.balcao? ? balcao_path : deliveries_path %>
+  <%= link_to "Voltar", back_path, class: "text-primary-700 hover:underline text-sm" %>
 </div>
 
-<div class="grid md:grid-cols-2 gap-6 items-start">
-  <% if @order.aberto? %>
-    <%= render "product_picker", categories: @categories, order: @order %>
-  <% else %>
-    <div class="bg-surface rounded-xl shadow-sm border border-gray-200 p-4">
-      <p class="text-ink-muted">Esta comanda está <%= @order.fechado? ? "fechada" : "cancelada" %>.</p>
-      <% if @order.fechado? %>
-        <%= link_to "Ver recibo", receipt_order_path(@order), class: "inline-block mt-3 text-primary-700 hover:underline text-sm" %>
-      <% end %>
-    </div>
-  <% end %>
+<div class="grid md:grid-cols-3 gap-6 items-start">
+  <div class="md:col-span-2">
+    <% if @order.aberto? %>
+      <%= render "product_picker", categories: @categories, order: @order %>
+    <% else %>
+      <div class="bg-surface rounded-xl shadow-sm border border-gray-200 p-4">
+        <p class="text-ink-muted">Esta comanda está <%= @order.fechado? ? "fechada" : "cancelada" %>.</p>
+        <% if @order.fechado? %>
+          <%= link_to "Ver recibo", receipt_order_path(@order), class: "inline-block mt-3 text-primary-700 hover:underline text-sm" %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
 
   <div class="md:sticky md:top-6">
     <%= render "cart", order: @order %>
