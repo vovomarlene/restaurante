@@ -68,20 +68,43 @@
 </div>
 
 <div class="bg-surface rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-  <h2 class="font-semibold text-lg mb-1 flex items-center gap-2"><%= icon :customers, css_class: "size-5 text-primary-700" %> Fiado <%= period_label %>, por cliente</h2>
-  <p class="text-3xl font-bold text-primary-700 mb-4"><%= number_to_currency(@fiado_by_customer.values.sum, unit: "R$", separator: ",", delimiter: ".") %></p>
+  <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
+    <h2 class="font-semibold text-lg flex items-center gap-2"><%= icon :customers, css_class: "size-5 text-primary-700" %> Fiado <%= period_label %>, por cliente</h2>
+    <%= link_to admin_reports_path(period: @period, date: @date.strftime("%d/%m/%Y"), only_owing: @only_owing ? nil : 1),
+          class: "text-sm rounded-md px-3 py-1.5 border #{@only_owing ? "bg-primary-600 text-white border-primary-600" : "border-gray-300 hover:bg-surface-muted"}" do %>
+      Mostrar só quem ainda deve
+    <% end %>
+  </div>
 
-  <% if @fiado_by_customer.empty? %>
-    <p class="text-ink-muted text-sm">Nenhuma compra fiado no período.</p>
+  <% if @fiado_report.empty? %>
+    <p class="text-ink-muted text-sm">Nenhuma movimentação de fiado no período<%= " entre quem ainda deve" if @only_owing %>.</p>
   <% else %>
-    <ul class="text-sm divide-y divide-gray-100">
-      <% @fiado_by_customer.each do |customer_name, amount| %>
-        <li class="py-1.5 flex justify-between">
-          <span><%= customer_name %></span>
-          <span class="font-medium"><%= number_to_currency(amount, unit: "R$", separator: ",", delimiter: ".") %></span>
-        </li>
-      <% end %>
-    </ul>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-sm">
+        <thead class="text-ink-muted">
+          <tr>
+            <th class="py-1.5 pr-2">Cliente</th>
+            <th class="py-1.5 pr-2 text-right">Comprou no período</th>
+            <th class="py-1.5 pr-2 text-right">Quitou no período</th>
+            <th class="py-1.5 text-right">Saldo devedor atual</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          <% @fiado_report.each do |row| %>
+            <tr>
+              <td class="py-1.5 pr-2">
+                <%= link_to row[:customer].name, customer_path(row[:customer]), class: "text-primary-700 hover:underline" %>
+              </td>
+              <td class="py-1.5 pr-2 text-right"><%= number_to_currency(row[:purchased], unit: "R$", separator: ",", delimiter: ".") %></td>
+              <td class="py-1.5 pr-2 text-right text-success"><%= number_to_currency(row[:settled], unit: "R$", separator: ",", delimiter: ".") %></td>
+              <td class="py-1.5 text-right font-medium <%= "text-danger" if row[:balance].positive? %>">
+                <%= number_to_currency(row[:balance], unit: "R$", separator: ",", delimiter: ".") %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
   <% end %>
 </div>
 

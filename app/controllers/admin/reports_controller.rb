@@ -14,8 +14,24 @@ class Admin::ReportsController < Admin::BaseController
     @sales_by_order_type = payments_in_range.group("orders.order_type").sum(:amount)
     @total_sales = @sales_by_method.values.sum
 
-    @fiado_by_customer = payments_in_range.where(method: :fiado).joins(:customer)
-      .group("customers.name").order("customers.name").sum(:amount)
+    # Comprou no período vs. quitou no período são duas coisas diferentes —
+    # uma venda fiado de R$50 já paga não deve continuar parecendo dívida
+    # em aberto só porque caiu dentro do período filtrado.
+    purchased_by_customer_id = payments_in_range.where(method: :fiado).group(:customer_id).sum(:amount)
+    settled_by_customer_id = FiadoSettlement.where(created_at: range).group(:customer_id).sum(:amount)
+    customer_ids = (purchased_by_customer_id.keys + settled_by_customer_id.keys).compact.uniq
+
+    @fiado_report = Customer.where(id: customer_ids).map { |customer|
+      {
+        customer: customer,
+        purchased: purchased_by_customer_id[customer.id] || 0,
+        settled: settled_by_customer_id[customer.id] || 0,
+        balance: customer.fiado_balance
+      }
+    }.sort_by { |row| row[:customer].name }
+
+    @only_owing = params[:only_owing].present?
+    @fiado_report = @fiado_report.select { |row| row[:balance].positive? } if @only_owing
 
     @top_products = OrderItem.joins(:order, :product)
       .where(status: :ativo)
