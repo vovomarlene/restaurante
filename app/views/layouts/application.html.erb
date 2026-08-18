@@ -25,7 +25,7 @@
     <% end %>
 
     <main class="flex-1 min-w-0 px-4 py-6">
-      <div class="max-w-5xl mx-auto">
+      <div class="<%= content_for?(:full_width) ? "w-full" : "max-w-5xl mx-auto" %>">
         <%= render "layouts/flash" %>
         <% if authenticated? %>
           <%= render "layouts/low_stock_banner" %>

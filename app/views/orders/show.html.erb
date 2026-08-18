@@ -1,4 +1,5 @@
 <% content_for :title, "Comanda ##{@order.id}" %>
+<% content_for :full_width, true %>
 <% content_for :head do %>
   <%= javascript_include_tag "qz-tray", "data-turbo-track": "reload" %>
 <% end %>
@@ -23,8 +24,8 @@
   <%= link_to "Voltar", back_path, class: "text-primary-700 hover:underline text-sm" %>
 </div>
 
-<div class="grid md:grid-cols-3 gap-6 items-start">
-  <div class="md:col-span-2">
+<div class="grid md:grid-cols-3 xl:grid-cols-4 gap-6 items-start">
+  <div class="md:col-span-2 xl:col-span-3">
     <% if @order.aberto? %>
       <%= render "product_picker", categories: @categories, order: @order %>
     <% else %>
@@ -37,7 +38,7 @@
     <% end %>
   </div>
 
-  <div class="md:sticky md:top-6">
+  <div class="md:sticky md:top-6 max-w-md">
     <%= render "cart", order: @order %>
   </div>
 </div>
