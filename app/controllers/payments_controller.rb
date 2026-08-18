@@ -1,6 +1,8 @@
 class PaymentsController < ApplicationController
   before_action :set_order
-  before_action :require_open_cash_session
+  before_action :require_open_cash_session, only: [ :new, :create ]
+  before_action :set_payment, only: [ :edit, :update ]
+  before_action :require_admin, only: [ :edit, :update ]
 
   def new
     # Construído sem passar pela associação @order.payments — isso evita que
@@ -32,6 +34,26 @@ class PaymentsController < ApplicationController
     end
   end
 
+  # Corrige a forma de pagamento de um lançamento já registrado (ex: marcou
+  # "Dinheiro" por engano, era Pix). Só o método/valor recebido/cliente —
+  # não mexe no valor, isso evitaria reabrir a conta de balance_due da
+  # comanda de um jeito difícil de auditar.
+  def edit
+  end
+
+  def update
+    if @payment.refunds.exists?
+      redirect_to order_path(@order), alert: "Este pagamento já foi estornado — não dá pra corrigir a forma de pagamento dele."
+      return
+    end
+
+    if @payment.update(edit_payment_params)
+      redirect_to order_path(@order), notice: "Forma de pagamento corrigida."
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def redirect_after_payment
@@ -46,6 +68,10 @@ class PaymentsController < ApplicationController
     @order = Order.find(params[:order_id])
   end
 
+  def set_payment
+    @payment = @order.payments.find(params[:id])
+  end
+
   def require_open_cash_session
     return if CashSession.current
 
@@ -54,5 +80,9 @@ class PaymentsController < ApplicationController
 
   def payment_params
     params.expect(payment: [ :method, :amount, :amount_received, :customer_id, :launched_on ])
+  end
+
+  def edit_payment_params
+    params.expect(payment: [ :method, :amount_received, :customer_id ])
   end
 end

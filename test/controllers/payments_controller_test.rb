@@ -55,4 +55,32 @@ class PaymentsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_entity
   end
+
+  test "update lets an admin correct a wrongly recorded payment method" do
+    payment = payments(:balcao_fechada_pagamento)
+
+    patch order_payment_path(payment.order, payment), params: { payment: { method: "pix" } }
+
+    assert_redirected_to order_path(payment.order)
+    assert payment.reload.pix?
+    assert_equal 32.00, payment.amount # o valor não muda
+  end
+
+  test "update is blocked for non-admins" do
+    sign_in_as(users(:one))
+    payment = payments(:balcao_fechada_pagamento)
+
+    patch order_payment_path(payment.order, payment), params: { payment: { method: "pix" } }
+
+    assert_not payment.reload.pix?
+  end
+
+  test "update refuses to correct a payment that has already been refunded" do
+    payment = payments(:balcao_estornada_pagamento)
+
+    patch order_payment_path(payment.order, payment), params: { payment: { method: "pix" } }
+
+    assert_redirected_to order_path(payment.order)
+    assert_not payment.reload.pix?
+  end
 end
